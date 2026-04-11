@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Biblioteca Escolar - Empréstimos</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/emprestimo.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h1>Escola Estadual<span>  Mariana Cavalcanti</span></h1>
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li class="nav-link" data-tab="livros">
+                        <i class="fa-brands fa-bimobject"></i>
+                        <a href="index.html" class="nav-link" data-tab="index">
+                            <span>Biblioteca</span>
+                        </a>
+                    </li>
+                    <li class="nav-link" data-tab="livros"> 
+                        <a href="arcevo.html" class="nav-link" data-tab="livros">                       
+                        <i class="fas fa-book"></i>                       
+                            <span>Livros</span>
+                        </a>
+                    </li>
+                    <li class="nav-link" data-tab="emprestimos">
+                        <a href="emprestimo.html" class="nav-link" data-tab="emprestimos">
+                            <i class="fas fa-book-reader"></i>
+                            <span>Empréstimos</span>
+                        </a>
+                    </li>
+                    <li class="nav-link" data-tab="controlDidatico">
+                        <a href="controlDidatico.html" class="nav-link" data-tab="controlDidatico">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Controle Didático</span>
+                        </a>    
+                    </li>
+                    <li class="nav-link" data-tab="atestados">
+                        <a href="RegisterAtestado.html" class="nav-link" data-tab="atestados">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span>Registro de Atestados</span>
+                        </a>
+                    </li>
+                    <li class="nav-link" data-tab="outros">
+                        <a href="outros.html" class="nav-link" data-tab="outros">
+                        <i class="fa-solid fa-network-wired"></i>
+                        <span>Outros</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <!-- Header da Página -->
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-book-reader"></i>
+                Gestão de Empréstimos
+            </h2>
+            <p>Gerencie todos os empréstimos de livros da biblioteca</p>
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Empréstimos Ativos</h3>
+                    <div class="stat-number">24</div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Empréstimos Hoje</h3>
+                    <div class="stat-number">3</div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Atrasados</h3>
+                    <div class="stat-number">2</div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total de Empréstimos</h3>
+                    <div class="stat-number">156</div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar por livro, estudante ou data...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active">Todos</button>
+                <button class="filter-btn">Ativos</button>
+                <button class="filter-btn">Atrasados</button>
+                <button class="filter-btn">Devolvidos</button>
+            </div>
+        </div>
+
+        <!-- Lista de Empréstimos -->
+        <div class="emprestimos-container">
+            <!-- Card 1 - Empréstimo Normal -->
+            <div class="emprestimo-card">
+                <div class="card-header">
+                    <div class="status-badge active">
+                        <i class="fas fa-check-circle"></i> Em andamento
+                    </div>
+                    <div class="card-date">
+                        <i class="fas fa-calendar-alt"></i> Empréstimo: 15/03/2024
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <i class="fas fa-book"></i>
+                            <div>
+                                <label>Livro</label>
+                                <p>O Nome do Vento</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-user-graduate"></i>
+                            <div>
+                                <label>Estudante</label>
+                                <p>Ana Beatriz Silva</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div>
+                                <label>Devolução Prevista</label>
+                                <p>30/03/2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-action btn-view" onclick="openModalDetalhes(1)">
+                        <i class="fas fa-eye"></i> Detalhes
+                    </button>
+                    <button class="btn-action btn-return">
+                        <i class="fas fa-undo-alt"></i> Devolução
+                    </button>
+                    <button class="btn-action btn-cancel">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 2 - Empréstimo Atrasado -->
+            <div class="emprestimo-card atrasado">
+                <div class="card-header">
+                    <div class="status-badge late">
+                        <i class="fas fa-exclamation-circle"></i> Atrasado
+                    </div>
+                    <div class="card-date">
+                        <i class="fas fa-calendar-alt"></i> Empréstimo: 01/03/2024
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <i class="fas fa-book"></i>
+                            <div>
+                                <label>Livro</label>
+                                <p>Harry Potter e a Pedra Filosofal</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-user-graduate"></i>
+                            <div>
+                                <label>Estudante</label>
+                                <p>Carlos Eduardo Mendes</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div>
+                                <label>Devolução Prevista</label>
+                                <p>15/03/2024</p>
+                                <span class="days-late">Atrasado 5 dias</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-action btn-view" onclick="openModalDetalhes(2)">
+                        <i class="fas fa-eye"></i> Detalhes
+                    </button>
+                    <button class="btn-action btn-return">
+                        <i class="fas fa-undo-alt"></i> Devolução
+                    </button>
+                    <button class="btn-action btn-cancel">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 3 - Empréstimo Concluído -->
+            <div class="emprestimo-card completed">
+                <div class="card-header">
+                    <div class="status-badge completed">
+                        <i class="fas fa-check-double"></i> Devolvido
+                    </div>
+                    <div class="card-date">
+                        <i class="fas fa-calendar-alt"></i> Empréstimo: 10/02/2024
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <i class="fas fa-book"></i>
+                            <div>
+                                <label>Livro</label>
+                                <p>Dom Casmurro</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-user-graduate"></i>
+                            <div>
+                                <label>Estudante</label>
+                                <p>Fernanda Oliveira</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div>
+                                <label>Devolvido em</label>
+                                <p>25/02/2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn-action btn-view" onclick="openModalDetalhes(3)">
+                        <i class="fas fa-eye"></i> Detalhes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Detalhes do Empréstimo -->
+    <div id="modalDetalhes" class="modal-overlay">
+        <div class="modal-container modal-large">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-info-circle"></i>
+                    Detalhes do Empréstimo
+                </h3>
+                <button class="modal-close" onclick="closeModalDetalhes()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="detalhes-grid">
+                    <!-- Informações do Livro -->
+                    <div class="detalhes-section">
+                        <div class="section-title">
+                            <i class="fas fa-book"></i>
+                            <h4>Informações do Livro</h4>
+                        </div>
+                        <div class="detalhes-content">
+                            <p><strong>Título:</strong> <span id="detalhe_livro">O Nome do Vento</span></p>
+                            <p><strong>Autor:</strong> Patrick Rothfuss</p>
+                            <p><strong>CBL:</strong> 978-85-1234-567-8</p>
+                            <p><strong>Categoria:</strong> Fantasia</p>
+                            <p><strong>Editora:</strong> Arqueiro</p>
+                        </div>
+                        <button class="btn-link" onclick="alert('Ver mais detalhes do livro')">
+                            <i class="fas fa-external-link-alt"></i> Ver mais
+                        </button>
+                    </div>
+
+                    <!-- Informações do Estudante -->
+                    <div class="detalhes-section">
+                        <div class="section-title">
+                            <i class="fas fa-user-graduate"></i>
+                            <h4>Informações do Estudante</h4>
+                        </div>
+                        <div class="detalhes-content">
+                            <p><strong>Nome:</strong> <span id="detalhe_estudante">Ana Beatriz Silva</span></p>
+                            <p><strong>Matrícula:</strong> 202400123</p>
+                            <p><strong>Turma:</strong> 3º Ano A</p>
+                            <p><strong>Telefone:</strong> (11) 99999-9999</p>
+                            <p><strong>Email:</strong> ana.silva@escola.com</p>
+                        </div>
+                        <button class="btn-link" onclick="alert('Ver mais detalhes do estudante')">
+                            <i class="fas fa-external-link-alt"></i> Ver mais
+                        </button>
+                    </div>
+
+                    <!-- Informações do Empréstimo -->
+                    <div class="detalhes-section full-width">
+                        <div class="section-title">
+                            <i class="fas fa-hand-holding-heart"></i>
+                            <h4>Informações do Empréstimo</h4>
+                        </div>
+                        <div class="info-emprestimo-grid">
+                            <div class="info-field">
+                                <label>Data do Empréstimo:</label>
+                                <p>15/03/2024</p>
+                            </div>
+                            <div class="info-field">
+                                <label>Data Prevista Devolução:</label>
+                                <p>30/03/2024</p>
+                            </div>
+                            <div class="info-field">
+                                <label>Status:</label>
+                                <p><span class="status-badge-small active">Em andamento</span></p>
+                            </div>
+                            <div class="info-field full-width">
+                                <label>Observações:</label>
+                                <p>Livro em bom estado. Estudante realizou empréstimo pela primeira vez.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModalDetalhes()">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+                <button class="btn-return" onclick="alert('Registrar devolução')">
+                    <i class="fas fa-undo-alt"></i> Registrar Devolução
+                </button>
+                <button class="btn-cancel-action" onclick="alert('Cancelar empréstimo')">
+                    <i class="fas fa-ban"></i> Cancelar Empréstimo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModalDetalhes(id) {
+            const modal = document.getElementById('modalDetalhes');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Aqui você pode carregar os dados dinâmicos baseado no ID
+            console.log('Abrindo detalhes do empréstimo:', id);
+        }
+        
+        function closeModalDetalhes() {
+            const modal = document.getElementById('modalDetalhes');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Fechar modal clicando fora (opcional)
+        document.getElementById('modalDetalhes').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModalDetalhes();
+            }
+        });
+    </script>
+</body>
+</html>
