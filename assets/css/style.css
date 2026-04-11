@@ -27,26 +27,26 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: var(--gray-800);
+    font-family: 'Inter', sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;        
     min-height: 100vh;
 }
 
-/* Header */
+/* Header - Estilo da página de atestado */
 header {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 100;
 }
 
 .header-content {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -57,83 +57,81 @@ header {
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 
 .logo-icon {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    background: #3b82f6;
+    width: 45px;
+    height: 45px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    font-size: 1.5rem;
 }
 
 .logo-icon i {
-    font-size: 1.5rem;
     color: white;
 }
 
 .logo h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--gray-800), var(--primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
+    background: none;
+    -webkit-text-fill-color: white;
+}
+
+.logo h1 span {
+    font-weight: 300;
+    color: #94a3b8;
 }
 
 /* Navegação */
 .nav-menu ul {
     display: flex;
-    gap: 0.3rem;
-    background: var(--gray-100);
-    padding: 0.25rem;
-    border-radius: 2rem;
     list-style: none;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    background: none;
+    padding: 0;
+    border-radius: 0;
 }
 
 .nav-link {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
     transition: all 0.3s;
-    font-weight: 500;
     cursor: pointer;
 }
 
 .nav-link a {
+    color: white;
     text-decoration: none;
-    color: var(--gray-600);
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.nav-link:hover {
-    background: var(--gray-200);
+.nav-link i {
+    font-size: 1.1rem;
+    color: white;
+}
+
+.nav-link:hover, .nav-link.active {
+    background: rgba(59, 130, 246, 0.3);
 }
 
 .nav-link:hover a {
-    color: var(--primary);
-}
-
-.nav-link i {
-    font-size: 1.1rem;
-    color: var(--gray-600);
+    color: white;
 }
 
 .nav-link:hover i {
-    color: var(--primary);
+    color: white;
 }
 
 /* Main */
@@ -178,6 +176,70 @@ main {
     font-weight: 700;
     color: var(--gray-800);
     margin-bottom: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .nav-menu ul {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        padding: 0.5rem 1rem;
+    }
+    
+    .nav-link span {
+        display: inline;
+    }
+    
+    .nav-link i {
+        font-size: 1rem;
+    }
+    
+    main {
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .logo-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logo-icon i {
+        font-size: 1.2rem;
+    }
+    
+    .nav-link span {
+        display: none;
+    }
+    
+    .nav-link i {
+        font-size: 1.25rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
 }
 
 /* Responsividade */

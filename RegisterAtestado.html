@@ -2,11 +2,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca Escolar - Sistema de Gestão</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Registro de Atestados</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/atestados.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
 </head>
 <body>
     <header>
@@ -19,40 +22,40 @@
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li class="nav-link" data-tab="livros">
-                        <i class="fa-brands fa-bimobject"></i>
-                        <a href="index.html" class="nav-link" data-tab="index">
+                    <li class="nav-link">
+                        <a href="index.html">
+                            <i class="fa-brands fa-bimobject"></i>
                             <span>Biblioteca</span>
                         </a>
                     </li>
-                    <li class="nav-link" data-tab="livros"> 
-                        <a href="arcevo.html" class="nav-link" data-tab="livros">                       
-                        <i class="fas fa-book"></i>                       
+                    <li class="nav-link">
+                        <a href="arcevo.html">
+                            <i class="fas fa-book"></i>
                             <span>Livros</span>
                         </a>
                     </li>
-                    <li class="nav-link" data-tab="emprestimos">
-                        <a href="emprestimo.html" class="nav-link" data-tab="emprestimos">
+                    <li class="nav-link">
+                        <a href="emprestimo.html">
                             <i class="fas fa-book-reader"></i>
                             <span>Empréstimos</span>
                         </a>
                     </li>
-                    <li class="nav-link" data-tab="controlDidatico">
-                        <a href="controlDidatico.html" class="nav-link" data-tab="controlDidatico">
+                    <li class="nav-link">
+                        <a href="controlDidatico.html">
                             <i class="fa-solid fa-gear"></i>
                             <span>Controle Didático</span>
-                        </a>    
+                        </a>
                     </li>
-                    <li class="nav-link" data-tab="atestados">
-                        <a href="RegisterAtestado.html" class="nav-link" data-tab="atestados">
+                    <li class="nav-link active">
+                        <a href="RegisterAtestado.html">
                             <i class="fa-solid fa-clipboard-check"></i>
                             <span>Registro de Atestados</span>
                         </a>
                     </li>
-                    <li class="nav-link" data-tab="outros">
-                        <a href="outros.html" class="nav-link" data-tab="outros">
-                        <i class="fa-solid fa-network-wired"></i>
-                        <span>Outros</span>
+                    <li class="nav-link">
+                        <a href="outros.html">
+                            <i class="fa-solid fa-network-wired"></i>
+                            <span>Outros</span>
                         </a>
                     </li>
                 </ul>
@@ -61,7 +64,167 @@
     </header>
     
     <main class="main-content">
-       
+        <section class="page-header">
+            <h2><i class="fa-solid fa-clipboard-check"></i> Registro de Atestados Médicos</h2>
+            <p>Gerencie os atestados de alunos e funcionários da escola.</p>
+        </section>
+        
+        <section class="atestados-section">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-notes-medical"></i> Atestados Registrados</h2>
+                <button class="btn-primary" id="btnNovoAtestado">
+                    <i class="fas fa-plus"></i> Novo Atestado
+                </button>
+            </div>
+            
+            <div class="filtros-container">
+                <div class="filtro-group">
+                    <label><i class="fas fa-filter"></i> Filtrar por:</label>
+                    <select id="filtroTipo" class="filtro-select">
+                        <option value="todos">Todos</option>
+                        <option value="aluno">Alunos</option>
+                        <option value="funcionario">Funcionários</option>
+                    </select>
+                </div>
+                <div class="filtro-group">
+                    <label><i class="fas fa-search"></i> Buscar:</label>
+                    <input type="text" id="buscaAtestado" placeholder="Nome do aluno/funcionário..." class="filtro-input">
+                </div>
+            </div>
+            
+            <div class="cards-atestados" id="cardsAtestados">
+                <!-- Os cards serão inseridos dinamicamente aqui -->
+            </div>
+        </section>
     </main>
+    
+    <!-- Modal de Cadastro de Atestado -->
+    <div id="modalAtestado" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>
+                    <i class="fa-solid fa-clipboard-check"></i> 
+                    Novo Atestado Médico
+                </h3>
+                <button class="modal-close" id="btnCloseModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="formAtestado">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="nome">
+                                <i class="fas fa-user"></i> Nome Completo
+                            </label>
+                            <input type="text" id="nome" name="nome" 
+                                placeholder="Digite o nome completo" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tipo">
+                                <i class="fas fa-id-card"></i> Tipo
+                            </label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="">Selecione</option>
+                                <option value="aluno">Aluno</option>
+                                <option value="funcionario">Funcionário</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="grupoTurma" style="display: none;">
+                            <label for="turma">
+                                <i class="fas fa-users"></i> Turma
+                            </label>
+                            <select id="turma" name="turma">
+                                <option value="">Selecione a turma</option>
+                                <option value="1º MATUTINO">1º MATUTINO</option>
+                                <option value="2º MATUTINO">2º MATUTINO</option>
+                                <option value="3º MATUTINO">3º MATUTINO</option>
+                                <option value="1º VESPERTINO">1º VESPERTINO</option>
+                                <option value="2º VESPERTINO">2º VESPERTINO</option>
+                                <option value="3º VESPERTINO">3º VESPERTINO</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="grupoFuncao" style="display: none;">
+                            <label for="funcao">
+                                <i class="fas fa-briefcase"></i> Cargo/Função
+                            </label>
+                            <input type="text" id="funcao" name="funcao" 
+                                placeholder="Ex: Professor, Coordenador, Secretária...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dataInicio">
+                                <i class="fas fa-calendar-alt"></i> Data Início
+                            </label>
+                            <input type="date" id="dataInicio" name="dataInicio" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dataFim">
+                                <i class="fas fa-calendar-check"></i> Data Fim
+                            </label>
+                            <input type="date" id="dataFim" name="dataFim" required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="motivo">
+                                <i class="fas fa-stethoscope"></i> Motivo
+                            </label>
+                            <input type="text" id="motivo" name="motivo" 
+                                placeholder="Ex: Consulta médica, Cirurgia, Doença..." required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="observacoes">
+                                <i class="fas fa-comment-dots"></i> Observações (opcional)
+                            </label>
+                            <textarea id="observacoes" name="observacoes" 
+                                    rows="3" placeholder="Observações adicionais..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="anexo">
+                                <i class="fas fa-paperclip"></i> Anexo (opcional)
+                            </label>
+                            <input type="file" id="anexo" name="anexo" accept=".pdf,.jpg,.jpeg,.png">
+                            <small style="color: #666; font-size: 0.75rem;">Formatos: PDF, JPG, PNG (max. 5MB)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" id="btnCancelModal">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save"></i> Salvar Atestado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Visualização de Anexo -->
+    <div id="modalAnexo" class="modal-overlay">
+        <div class="modal-container modal-anexo">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-paperclip"></i> 
+                    Visualizar Anexo
+                </h3>
+                <button class="modal-close" id="btnCloseAnexoModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="anexoContent">
+            </div>
+        </div>
+    </div>
+    
+    <script src="assets/js/atestados.js"></script>
 </body>
 </html>
