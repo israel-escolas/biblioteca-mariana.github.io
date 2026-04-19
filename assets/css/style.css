@@ -27,13 +27,14 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: #f1f5f9;
-    color: #1e293b;        
+    color: #1e293b;
     min-height: 100vh;
+    line-height: 1.5;
 }
 
-/* Header - Estilo da página de atestado */
+/* Header */
 header {
     background: linear-gradient(135deg, #1e293b, #0f172a);
     color: white;
@@ -68,19 +69,13 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-}
-
-.logo-icon i {
-    color: white;
+    font-size: 1.8rem;
 }
 
 .logo h1 {
     font-size: 1.3rem;
     font-weight: 600;
     color: white;
-    background: none;
-    -webkit-text-fill-color: white;
 }
 
 .logo h1 span {
@@ -94,9 +89,6 @@ header {
     list-style: none;
     gap: 0.5rem;
     flex-wrap: wrap;
-    background: none;
-    padding: 0;
-    border-radius: 0;
 }
 
 .nav-link {
@@ -117,21 +109,13 @@ header {
     gap: 0.5rem;
 }
 
-.nav-link i {
-    font-size: 1.1rem;
-    color: white;
+.nav-icon {
+    font-size: 1.2rem;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
     background: rgba(59, 130, 246, 0.3);
-}
-
-.nav-link:hover a {
-    color: white;
-}
-
-.nav-link:hover i {
-    color: white;
 }
 
 /* Main */
@@ -151,21 +135,21 @@ main {
 
 .stats-grid > div {
     background: white;
-    border-radius: var(--border-radius-lg);
+    border-radius: 16px;
     padding: 1.5rem;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .stats-grid > div:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .stat-info h3 {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--gray-600);
+    color: #868e96;
     margin-bottom: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -174,126 +158,11 @@ main {
 .stat-number {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--gray-800);
+    color: #343a40;
     margin-bottom: 0.5rem;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    header {
-        padding: 1rem;
-    }
-    
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .nav-menu ul {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .nav-link {
-        padding: 0.5rem 1rem;
-    }
-    
-    .nav-link span {
-        display: inline;
-    }
-    
-    .nav-link i {
-        font-size: 1rem;
-    }
-    
-    main {
-        padding: 1rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 1.2rem;
-    }
-    
-    .logo-icon {
-        width: 35px;
-        height: 35px;
-    }
-    
-    .logo-icon i {
-        font-size: 1.2rem;
-    }
-    
-    .nav-link span {
-        display: none;
-    }
-    
-    .nav-link i {
-        font-size: 1.25rem;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        padding: 1rem;
-    }
-    
-    .nav-menu ul {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    .nav-link {
-        padding: 0.5rem 1rem;
-    }
-    
-    .nav-link span {
-        display: none;
-    }
-    
-    .nav-link i {
-        font-size: 1.25rem;
-    }
-    
-    main {
-        padding: 1rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 1.2rem;
-    }
-    
-    .logo-icon {
-        width: 32px;
-        height: 32px;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
-}
-/* =============================================
-   NOVAS SEÇÕES DO DASHBOARD (INDEX)
-   ============================================= */
-
+/* Dashboard Sections */
 .dashboard-sections {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -301,26 +170,29 @@ main {
     margin: 2rem 0;
 }
 
-/* Ações Rápidas */
-.quick-actions {
+.quick-actions,
+.featured-books,
+.upcoming-returns {
     background: white;
-    border-radius: var(--border-radius-lg);
+    border-radius: 16px;
     padding: 1.5rem;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.quick-actions h2, .featured-books h2, .upcoming-returns h2 {
+.quick-actions h2,
+.featured-books h2,
+.upcoming-returns h2 {
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--gray-800);
+    color: #343a40;
     margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.quick-actions h2 i, .featured-books h2 i, .upcoming-returns h2 i {
-    color: var(--primary);
+.section-icon {
+    font-size: 1.3rem;
 }
 
 .action-buttons {
@@ -330,8 +202,8 @@ main {
 }
 
 .action-btn {
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
     border-radius: 12px;
     padding: 1rem 0.75rem;
     display: flex;
@@ -339,34 +211,21 @@ main {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: var(--gray-800);
+    color: #343a40;
     font-weight: 500;
     transition: all 0.2s;
 }
 
-.action-btn i {
-    font-size: 1.5rem;
-    color: var(--primary);
+.btn-icon {
+    font-size: 1.8rem;
 }
 
 .action-btn:hover {
-    background: var(--primary);
-    border-color: var(--primary);
+    background: #4361ee;
+    border-color: #4361ee;
     color: white;
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-}
-
-.action-btn:hover i {
-    color: white;
-}
-
-/* Livros em Destaque */
-.featured-books {
-    background: white;
-    border-radius: var(--border-radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .books-carousel {
@@ -380,13 +239,13 @@ main {
     align-items: center;
     gap: 1rem;
     padding: 0.75rem;
-    background: var(--gray-50);
+    background: #f8f9fa;
     border-radius: 12px;
     transition: background 0.2s;
 }
 
 .book-item:hover {
-    background: var(--gray-100);
+    background: #f1f3f5;
 }
 
 .book-cover {
@@ -399,19 +258,19 @@ main {
     justify-content: center;
     font-size: 1.8rem;
     color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .book-info h4 {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--gray-800);
+    color: #343a40;
     margin-bottom: 0.2rem;
 }
 
 .book-info p {
     font-size: 0.8rem;
-    color: var(--gray-600);
+    color: #868e96;
     margin-bottom: 0.3rem;
 }
 
@@ -438,13 +297,8 @@ main {
     color: #e67700;
 }
 
-/* Próximas Devoluções */
 .upcoming-returns {
     grid-column: span 2;
-    background: white;
-    border-radius: var(--border-radius-lg);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-md);
 }
 
 .returns-list {
@@ -458,25 +312,25 @@ main {
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    background: var(--gray-50);
+    background: #f8f9fa;
     border-radius: 12px;
-    border-left: 4px solid var(--gray-300);
+    border-left: 4px solid #dee2e6;
 }
 
 .return-item.overdue {
-    border-left-color: var(--danger);
+    border-left-color: #ff6b6b;
     background: #fff5f5;
 }
 
 .student-name {
     font-weight: 600;
-    color: var(--gray-800);
+    color: #343a40;
     margin-bottom: 0.2rem;
 }
 
 .book-title {
     font-size: 0.85rem;
-    color: var(--gray-600);
+    color: #868e96;
 }
 
 .return-date {
@@ -484,7 +338,7 @@ main {
     padding: 0.3rem 0.8rem;
     border-radius: 20px;
     background: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .return-date.warning {
@@ -493,74 +347,129 @@ main {
 }
 
 .return-date.danger {
-    color: var(--danger);
+    color: #ff6b6b;
     background: #ffe3e3;
 }
 
-/* Banner do Site da Escola */
+/* Banner do Site da Escola - COM ÍCONES NATIVOS */
 .school-site-banner {
     margin: 2rem 0 1rem;
     background: linear-gradient(135deg, #1e293b, #0f172a);
     border-radius: 60px;
     padding: 0.25rem;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    display: block;
+    width: 100%;
 }
 
 .school-site-banner a {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     gap: 1rem;
     padding: 1rem 2rem;
-    background: white;
+    background: white !important;
     border-radius: 60px;
     text-decoration: none;
-    color: var(--gray-800);
+    color: #1e293b !important;
     font-weight: 500;
     transition: all 0.3s;
     border: 2px solid transparent;
+    width: 100%;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .school-site-banner a:hover {
-    background: transparent;
-    color: white;
-    border-color: rgba(255,255,255,0.3);
+    background: transparent !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-.school-site-banner a i {
-    color: var(--primary);
-    font-size: 1.1rem;
+.banner-icon {
+    font-size: 1.3rem;
+    font-weight: bold;
 }
 
-.school-site-banner a:hover i {
-    color: white;
+.school-site-banner a:hover .banner-icon {
+    opacity: 0.9;
 }
 
 .school-site-banner strong {
-    color: var(--primary-dark);
+    color: #3a56d4 !important;
+    font-weight: 700;
 }
 
 .school-site-banner a:hover strong {
-    color: #ffd43b;
+    color: #ffd43b !important;
 }
 
-/* Ajustes Responsivos */
+/* Responsividade */
 @media (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nav-menu ul {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem;
+    }
+
+    .nav-link span {
+        display: none;
+    }
+
+    .nav-icon {
+        font-size: 1.4rem;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
     .dashboard-sections {
         grid-template-columns: 1fr;
     }
-    
+
     .upcoming-returns {
         grid-column: span 1;
     }
-    
+
     .action-buttons {
         grid-template-columns: 1fr;
     }
-    
+
     .school-site-banner a {
         flex-direction: column;
         text-align: center;
         padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1.3rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
     }
 }
