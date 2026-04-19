@@ -52,7 +52,28 @@
                     </button>
                 </div>
             </div>
-
+            <!-- ===== BARRA DE BUSCA E FILTROS ===== -->
+            <div class="filtros-container">
+                <div class="busca-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" 
+                        id="searchInput" 
+                        placeholder="Buscar por título ou autor..." 
+                        class="busca-input">
+                    <button id="clearSearch" class="clear-search" style="display:none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="categorias-filtro">
+                    <button class="categoria-btn active" data-categoria="todos">
+                        <i class="fas fa-books"></i> Todos
+                    </button>
+                    <div id="categoriasContainer" class="categorias-container">
+                        <!-- Categorias serão carregadas dinamicamente -->
+                    </div>
+                </div>
+            </div>
             <div class="books-container">
                 <div id="booksGrid" class="books-grid">
                     <p class="loading"><i class="fas fa-spinner fa-spin"></i> Carregando livros...</p>

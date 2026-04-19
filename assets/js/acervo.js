@@ -17,6 +17,10 @@ const refreshButton    = document.getElementById('refreshBooks');
 const imagemInput      = document.getElementById('imagemLivro');
 const previewContainer = document.getElementById('previewContainer');
 const imagemPreview    = document.getElementById('imagemPreview');
+// ============== VARIÁVEIS DE BUSCA E FILTRO ==============
+let livrosCompletos = []; // Armazena todos os livros carregados
+let categoriaAtiva = 'todos';
+let termoBusca = '';
 
 // ============================================
 // CONVERTER LINKS DO DRIVE
@@ -270,20 +274,199 @@ async function carregarLivros() {
     }
 }
 
-// ============== EXIBIR LIVROS ==============
+// ============== EXIBIR LIVROS (VERSÃO COM FILTROS) ==============
 
 function exibirLivros(livros) {
     const booksGrid = document.getElementById('booksGrid');
     if (!booksGrid) return;
 
-    booksGrid.innerHTML = '';
+    // Salva a lista completa para filtros
+    livrosCompletos = livros || [];
+    
+    // Atualiza categorias
+    atualizarCategorias(livrosCompletos);
+    
+    // Aplica filtros e exibe
+    aplicarFiltros();
+}
 
-    if (!livros || livros.length === 0) {
-        booksGrid.innerHTML = '<p class="no-books"><i class="fas fa-book-open"></i> Nenhum livro cadastrado.</p>';
-        return;
+// ============== APLICAR FILTROS ==============
+
+function aplicarFiltros() {
+    const booksGrid = document.getElementById('booksGrid');
+    if (!booksGrid) return;
+    
+    // Filtra por categoria
+    let livrosFiltrados = livrosCompletos;
+    
+    if (categoriaAtiva !== 'todos') {
+        livrosFiltrados = livrosFiltrados.filter(livro => {
+            const cat = String(livro.categoria || livro.CATEGORIA || '').toLowerCase();
+            return cat === categoriaAtiva.toLowerCase();
+        });
     }
+    
+    // Filtra por termo de busca (apenas título ou autor)
+    if (termoBusca.trim() !== '') {
+        const termo = termoBusca.toLowerCase().trim();
+        livrosFiltrados = livrosFiltrados.filter(livro => {
+            const titulo = String(livro.titulo || livro.TITULO || '').toLowerCase();
+            const autor = String(livro.autor || livro.AUTOR || '').toLowerCase();
+            
+            return titulo.includes(termo) || autor.includes(termo);
+        });
+    }
+    
+    // Exibe os livros filtrados
+    booksGrid.innerHTML = '';
+    
+    if (livrosFiltrados.length === 0) {
+        booksGrid.innerHTML = `
+            <div class="no-books">
+                <i class="fas fa-search" style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem; display: block;"></i>
+                <p>Nenhum livro encontrado</p>
+                <small style="opacity: 0.7; display: block; margin-top: 0.5rem;">Tente outro título ou autor</small>
+            </div>
+        `;
+    } else {
+        livrosFiltrados.forEach(livro => booksGrid.appendChild(criarCardLivro(livro)));
+    }
+    
+    // Atualiza contador de resultados
+    atualizarContadorResultados(livrosFiltrados.length);
+}
 
-    livros.forEach(livro => booksGrid.appendChild(criarCardLivro(livro)));
+// ============== ATUALIZAR CATEGORIAS ==============
+
+function atualizarCategorias(livros) {
+    const container = document.getElementById('categoriasContainer');
+    if (!container) return;
+    
+    // Extrai categorias únicas
+    const categorias = new Set();
+    livros.forEach(livro => {
+        const cat = livro.categoria || livro.CATEGORIA;
+        if (cat && cat.trim() !== '') {
+            categorias.add(cat.trim());
+        }
+    });
+    
+    // Converte para array e ordena
+    const categoriasArray = Array.from(categorias).sort();
+    
+    // Cria os botões de categoria
+    container.innerHTML = '';
+    
+    categoriasArray.forEach(categoria => {
+        const count = livros.filter(l => 
+            (l.categoria || l.CATEGORIA || '').toLowerCase() === categoria.toLowerCase()
+        ).length;
+        
+        const btn = document.createElement('button');
+        btn.className = 'categoria-btn';
+        btn.dataset.categoria = categoria.toLowerCase();
+        btn.innerHTML = `
+            <i class="fas fa-tag"></i> ${categoria}
+            <span class="categoria-count">${count}</span>
+        `;
+        
+        btn.addEventListener('click', () => {
+            // Remove active de todos
+            document.querySelectorAll('.categoria-btn').forEach(b => 
+                b.classList.remove('active')
+            );
+            
+            // Adiciona active no clicado
+            btn.classList.add('active');
+            
+            // Atualiza categoria ativa
+            categoriaAtiva = categoria.toLowerCase();
+            
+            // Aplica filtros
+            aplicarFiltros();
+        });
+        
+        container.appendChild(btn);
+    });
+    
+    // Atualiza estado do botão "Todos"
+    const btnTodos = document.querySelector('[data-categoria="todos"]');
+    if (btnTodos) {
+        const totalLivros = livros.length;
+        btnTodos.innerHTML = `
+            <i class="fas fa-books"></i> Todos
+            <span class="categoria-count">${totalLivros}</span>
+        `;
+    }
+}
+
+// ============== ATUALIZAR CONTADOR DE RESULTADOS ==============
+
+function atualizarContadorResultados(count) {
+    const countElement = document.getElementById('resultadosCount');
+    if (countElement) {
+        countElement.textContent = count;
+    }
+}
+
+// ============== INICIALIZAR BUSCA E FILTROS ==============
+
+function inicializarBuscaEFiltros() {
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+    const btnTodos = document.querySelector('[data-categoria="todos"]');
+    
+    // Cria elemento para mostrar contagem de resultados
+    const filtrosContainer = document.querySelector('.filtros-container');
+    if (filtrosContainer && !document.getElementById('resultadosInfo')) {
+        const resultadosInfo = document.createElement('div');
+        resultadosInfo.id = 'resultadosInfo';
+        resultadosInfo.className = 'resultados-info';
+        resultadosInfo.innerHTML = `
+            <i class="fas fa-list"></i>
+            <span>Mostrando <strong id="resultadosCount">0</strong> livro(s)</span>
+        `;
+        filtrosContainer.appendChild(resultadosInfo);
+    }
+    
+    // Evento de busca
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            termoBusca = e.target.value;
+            
+            // Mostra/esconde botão limpar
+            if (clearSearch) {
+                clearSearch.style.display = termoBusca ? 'flex' : 'none';
+            }
+            
+            aplicarFiltros();
+        });
+    }
+    
+    // Botão limpar busca
+    if (clearSearch) {
+        clearSearch.addEventListener('click', () => {
+            if (searchInput) {
+                searchInput.value = '';
+                termoBusca = '';
+                clearSearch.style.display = 'none';
+                aplicarFiltros();
+                searchInput.focus();
+            }
+        });
+    }
+    
+    // Botão "Todos"
+    if (btnTodos) {
+        btnTodos.addEventListener('click', () => {
+            document.querySelectorAll('.categoria-btn').forEach(b => 
+                b.classList.remove('active')
+            );
+            btnTodos.classList.add('active');
+            categoriaAtiva = 'todos';
+            aplicarFiltros();
+        });
+    }
 }
 
 // ============== CRIAR CARD DO LIVRO ==============
@@ -518,6 +701,10 @@ if (refreshButton) {
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Sistema iniciado!');
+    
+    // Inicializa busca e filtros
+    inicializarBuscaEFiltros();
+    
     carregarLivros();
 });
 
