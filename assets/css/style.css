@@ -290,3 +290,277 @@ main {
         font-size: 2rem;
     }
 }
+/* =============================================
+   NOVAS SEÇÕES DO DASHBOARD (INDEX)
+   ============================================= */
+
+.dashboard-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+/* Ações Rápidas */
+.quick-actions {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.quick-actions h2, .featured-books h2, .upcoming-returns h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quick-actions h2 i, .featured-books h2 i, .upcoming-returns h2 i {
+    color: var(--primary);
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.action-btn {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    padding: 1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--gray-800);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.action-btn i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.action-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.action-btn:hover i {
+    color: white;
+}
+
+/* Livros em Destaque */
+.featured-books {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.books-carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.book-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: var(--gray-50);
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.book-item:hover {
+    background: var(--gray-100);
+}
+
+.book-cover {
+    width: 45px;
+    height: 60px;
+    background: linear-gradient(135deg, #4361ee, #6c8cff);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.book-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.2rem;
+}
+
+.book-info p {
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    margin-bottom: 0.3rem;
+}
+
+.book-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.book-status.available {
+    background: #d3f9d8;
+    color: #2b8a3e;
+}
+
+.book-status.borrowed {
+    background: #ffe3e3;
+    color: #c92a2a;
+}
+
+.book-status.reserved {
+    background: #fff3bf;
+    color: #e67700;
+}
+
+/* Próximas Devoluções */
+.upcoming-returns {
+    grid-column: span 2;
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.returns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.return-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--gray-50);
+    border-radius: 12px;
+    border-left: 4px solid var(--gray-300);
+}
+
+.return-item.overdue {
+    border-left-color: var(--danger);
+    background: #fff5f5;
+}
+
+.student-name {
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.2rem;
+}
+
+.book-title {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+}
+
+.return-date {
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.return-date.warning {
+    color: #e67700;
+    background: #fff9db;
+}
+
+.return-date.danger {
+    color: var(--danger);
+    background: #ffe3e3;
+}
+
+/* Banner do Site da Escola */
+.school-site-banner {
+    margin: 2rem 0 1rem;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border-radius: 60px;
+    padding: 0.25rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.school-site-banner a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background: white;
+    border-radius: 60px;
+    text-decoration: none;
+    color: var(--gray-800);
+    font-weight: 500;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.school-site-banner a:hover {
+    background: transparent;
+    color: white;
+    border-color: rgba(255,255,255,0.3);
+}
+
+.school-site-banner a i {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.school-site-banner a:hover i {
+    color: white;
+}
+
+.school-site-banner strong {
+    color: var(--primary-dark);
+}
+
+.school-site-banner a:hover strong {
+    color: #ffd43b;
+}
+
+/* Ajustes Responsivos */
+@media (max-width: 768px) {
+    .dashboard-sections {
+        grid-template-columns: 1fr;
+    }
+    
+    .upcoming-returns {
+        grid-column: span 1;
+    }
+    
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .school-site-banner a {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+}

@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Favicon padrão -->
+      
+    <!-- Título -->
     <title>Biblioteca Escolar - Sistema de Gestão</title>
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -43,16 +48,16 @@
                             <span>Controle Didático</span>
                         </a>
                     </li>
-                    <li class="nav-link active">
+                    <li class="nav-link">
                         <a href="RegisterAtestado.html">
                             <i class="fa-solid fa-clipboard-check"></i>
                             <span>Registro de Atestados</span>
                         </a>
                     </li>
                     <li class="nav-link">
-                        <a href="outros.html">
-                            <i class="fa-solid fa-network-wired"></i>
-                            <span>Outros</span>
+                        <a href="ficha_aluno.html">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <span>FICHA DO ALUNO</span>
                         </a>
                     </li>
                 </ul>
@@ -61,58 +66,234 @@
     </header>
     
     <main class="main-content">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #4361ee, #6c8cff);">
-                    <i class="fas fa-book"></i>
+        <!-- Painel de Acesso Rápido - Portais Educacionais -->
+    <div class="portais-section">
+        <div class="section-header">
+            <h2>
+                <i class="fas fa-globe"></i>
+                Portais de Acesso Rápido
+            </h2>
+            <p>Acesse os principais sistemas educacionais em um clique</p>
+        </div>
+        
+        <div class="portais-grid">
+            <!-- Card ENEM -->
+            <a href="https://enem.inep.gov.br/" target="_blank" class="portal-card-v2">
+                <div class="portal-icon-wrapper">
+                    <div class="portal-icon" style="background: linear-gradient(135deg, #1e3c72, #2a5298);">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
                 </div>
-                <div class="stat-info">
-                    <h3>Total de Livros</h3>
-                    <p class="stat-number" id="totalLivros">2.450</p>
-                    <span class="stat-trend positive">
-                        <i class="fas fa-arrow-up"></i> +12%
-                    </span>
+                <div class="portal-content">
+                    <div class="portal-header">
+                        <h3>ENEM 2026</h3>
+                        <span class="badge-oficial">Oficial</span>
+                    </div>
+                    <p>Exame Nacional do Ensino Médio</p>
+                    <div class="portal-footer">
+                        <span class="portal-url">
+                            <i class="fas fa-link"></i> enem.inep.gov.br
+                        </span>
+                        <span class="portal-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="portal-hover-effect"></div>
+            </a>
+            
+            <!-- Card SAEB -->
+            <a href="https://saeb.inep.gov.br/saeb/" target="_blank" class="portal-card-v2">
+                <div class="portal-icon-wrapper">
+                    <div class="portal-icon" style="background: linear-gradient(135deg, #4a1d96, #7c3aed);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="portal-content">
+                    <div class="portal-header">
+                        <h3>SAEB</h3>
+                        <span class="badge-oficial">Oficial</span>
+                    </div>
+                    <p>Sistema de Avaliação da Educação Básica</p>
+                    <div class="portal-footer">
+                        <span class="portal-url">
+                            <i class="fas fa-link"></i> gov.br/inep/saeb
+                        </span>
+                        <span class="portal-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="portal-hover-effect"></div>
+            </a>
+            
+            <!-- Card Escola -->
+            <a href="https://www.escolamarianacavalcanti.com.br" target="_blank" class="portal-card-v2">
+                <div class="portal-icon-wrapper">
+                    <div class="portal-icon" style="background: linear-gradient(135deg, #0d9488, #14b8a6);">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                </div>
+                <div class="portal-content">
+                    <div class="portal-header">
+                        <h3>Escola</h3>
+                        <span class="badge-oficial">Site Oficial</span>
+                    </div>
+                    <p>Escola Estadual Mariana Cavalcanti</p>
+                    <div class="portal-footer">
+                        <span class="portal-url">
+                            <i class="fas fa-link"></i> escolamarianacavalcanti.com.br
+                        </span>
+                        <span class="portal-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="portal-hover-effect"></div>
+            </a>
+            
+            <!-- Card SEEC-RN -->
+            <a href="https://gpd.educacao.rn.gov.br/" target="_blank" class="portal-card-v2">
+                <div class="portal-icon-wrapper">
+                    <div class="portal-icon" style="background: linear-gradient(135deg, #be123c, #e11d48);">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                </div>
+                <div class="portal-content">
+                    <div class="portal-header">
+                        <h3>SEEC-RN</h3>
+                        <span class="badge-oficial">GPD</span>
+                    </div>
+                    <p>Gestão de Pessoas e Desenvolvimento</p>
+                    <div class="portal-footer">
+                        <span class="portal-url">
+                            <i class="fas fa-link"></i> gpd.educacao.rn.gov.br
+                        </span>
+                        <span class="portal-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="portal-hover-effect"></div>
+            </a>
+        </div>
+    </div>
+
+        <!-- NOVAS SEÇÕES -->
+        <div class="dashboard-sections">
+            <!-- Ações Rápidas -->
+            <div class="quick-actions">
+                <h2><i class="fas fa-bolt"></i> Ações Rápidas</h2>
+                <div class="action-buttons">
+                    <a href="emprestimo.html" class="action-btn">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>Empréstimos</span>
+                    </a>
+                    <a href="ficha_aluno.html" class="action-btn" onclick="alert('Leitor de código de barras ativado!')">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span>Estudantes</span>
+                    </a>
+                    <a href="arcevo.html" class="action-btn">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Cadastrar Livro</span>
+                    </a>
+                    <a href="RegisterAtestado.html" class="action-btn">
+                        <i class="fas fa-file-medical"></i>
+                        <span>Novo Atestado</span>
+                    </a>
                 </div>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #ff6b6b, #ff9f9f);">
-                    <i class="fas fa-book-reader"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>Empréstimos Ativos</h3>
-                    <p class="stat-number" id="emprestimosAtivos">156</p>
-                    <span class="stat-trend neutral">
-                        <i class="fas fa-minus"></i> 0%
-                    </span>
+
+            <!-- Livros em Destaque -->
+            <div class="featured-books">
+                <h2><i class="fas fa-star"></i> Livros em Destaque</h2>
+                <div class="books-carousel">
+                    <div class="book-item">
+                        <div class="book-cover">📖</div>
+                        <div class="book-info">
+                            <h4>O Senhor dos Anéis</h4>
+                            <p>J.R.R. Tolkien</p>
+                            <span class="book-status available">Disponível</span>
+                        </div>
+                    </div>
+                    <div class="book-item">
+                        <div class="book-cover">📚</div>
+                        <div class="book-info">
+                            <h4>Dom Casmurro</h4>
+                            <p>Machado de Assis</p>
+                            <span class="book-status borrowed">Emprestado</span>
+                        </div>
+                    </div>
+                    <div class="book-item">
+                        <div class="book-cover">🔬</div>
+                        <div class="book-info">
+                            <h4>Uma Breve História do Tempo</h4>
+                            <p>Stephen Hawking</p>
+                            <span class="book-status available">Disponível</span>
+                        </div>
+                    </div>
+                    <div class="book-item">
+                        <div class="book-cover">🧙</div>
+                        <div class="book-info">
+                            <h4>Harry Potter e a Pedra Filosofal</h4>
+                            <p>J.K. Rowling</p>
+                            <span class="book-status reserved">Reservado</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #51cf66, #8ce99a);">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>Estudantes</h3>
-                    <p class="stat-number" id="estudantes">890</p>
-                    <span class="stat-trend positive">
-                        <i class="fas fa-arrow-up"></i> +5%
-                    </span>
+
+            <!-- Próximas Devoluções -->
+            <div class="upcoming-returns">
+                <h2><i class="fas fa-calendar-alt"></i> Próximas Devoluções</h2>
+                <div class="returns-list">
+                    <div class="return-item">
+                        <div class="return-info">
+                            <p class="student-name">Ana Beatriz da Costa</p>
+                            <p class="book-title">O Pequeno Príncipe</p>
+                        </div>
+                        <div class="return-date warning">
+                            <i class="fas fa-exclamation-triangle"></i> Amanhã
+                        </div>
+                    </div>
+                    <div class="return-item">
+                        <div class="return-info">
+                            <p class="student-name">Carlos Antonio da Silva</p>
+                            <p class="book-title">1984 - George Orwell</p>
+                        </div>
+                        <div class="return-date">
+                            22/04/2026
+                        </div>
+                    </div>
+                    <div class="return-item overdue">
+                        <div class="return-info">
+                            <p class="student-name">Maria Jocikelia da Silva</p>
+                            <p class="book-title">A Revolução dos Bichos</p>
+                        </div>
+                        <div class="return-date danger">
+                            <i class="fas fa-times-circle"></i> Atrasado (3 dias)
+                        </div>
+                    </div>
+                    <div class="return-item">
+                        <div class="return-info">
+                            <p class="student-name">Pedro Henrique da Silva</p>
+                            <p class="book-title">Capitães da Areia</p>
+                        </div>
+                        <div class="return-date">
+                            25/04/2026
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #ffd43b, #ffe69b);">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>Devoluções Pendentes</h3>
-                    <p class="stat-number" id="devolucoesPendentes">23</p>
-                    <span class="stat-trend negative">
-                        <i class="fas fa-arrow-down"></i> -8%
-                    </span>
-                </div>
-            </div>          
+        </div>
+
+        <!-- Link para o site da escola (Banner) -->
+        <div class="school-site-banner">
+            <a href="https://www.escolamarianacavalcanti.com.br" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-external-link-alt"></i>
+                <span>Visite o site oficial da escola: <strong>www.escolamarianacavalcanti.com.br</strong></span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </main>
 </body>

@@ -1,0 +1,490 @@
+
+
+/* ==================== BOTÕES DE TURMA ==================== */
+.turmas-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.turmas-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.turmas-title i {
+    color: #667eea;
+    font-size: 22px;
+}
+
+.turmas-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.turma-btn {
+    padding: 12px 24px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+.turma-btn i {
+    font-size: 16px;
+}
+
+.turma-btn:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+}
+
+.turma-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+}
+
+/* ==================== SELEÇÃO DE ALUNOS ==================== */
+.selection-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Lista de Alunos */
+.students-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.students-grid-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+}
+
+.student-item {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.student-item:hover {
+    background: #667eea;
+    border-color: #667eea;
+    transform: translateX(5px);
+}
+
+.student-item:hover .student-item-name,
+.student-item:hover i {
+    color: white;
+}
+
+.student-item i {
+    font-size: 24px;
+    color: #667eea;
+}
+
+.student-item-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    flex: 1;
+}
+
+/* ==================== CARD DO ALUNO ==================== */
+.student-card-container {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.student-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    position: relative;
+}
+
+.student-card-title {
+    font-size: 24px;
+    font-weight: 700;
+    padding-right: 40px;
+}
+
+.student-card-turma {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+    transition: all 0.3s;
+}
+
+.close-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(90deg);
+}
+
+/* ==================== DADOS DO ALUNO ==================== */
+.student-data {
+    padding: 25px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.section {
+    margin-bottom: 30px;
+    border-left: 4px solid #667eea;
+    padding-left: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: #667eea;
+    font-size: 20px;
+}
+
+.fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 8px 16px;
+}
+
+/* Campos com botão copiar */
+.field {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: nowrap;
+    gap: 12px;
+}
+
+.field-label {
+    font-weight: 600;
+    color: #666;
+    min-width: 160px;
+    font-size: 13px;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.field-value-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+}
+
+.field-value {
+    color: #333;
+    font-size: 13px;
+    word-break: break-word;
+    flex: 1;
+    line-height: 1.4;
+}
+
+.field-value.empty {
+    color: #999;
+    font-style: italic;
+}
+
+/* Botão copiar */
+.copy-btn {
+    background: none;
+    border: none;
+    color: #667eea;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    opacity: 0.6;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+}
+
+.copy-btn:hover {
+    background: #667eea;
+    color: white;
+    opacity: 1;
+}
+
+.copy-btn.copied {
+    background: #4ade80;
+    color: white;
+}
+
+/* Documentos */
+.document-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.document-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.document-badge i {
+    margin-right: 5px;
+    font-size: 11px;
+}
+
+/* ==================== FOTO DO ALUNO ==================== */
+.foto-aluno {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #667eea;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.foto-aluno:hover {
+    transform: scale(1.05);
+    border-color: #764ba2;
+}
+
+/* ==================== MODAL PARA AMPLIAR IMAGEM ==================== */
+.image-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-modal.active {
+    display: flex;
+}
+
+.image-modal img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10000;
+}
+
+.image-modal-close:hover {
+    color: #667eea;
+    transform: scale(1.1);
+}
+
+/* ==================== LOADING ==================== */
+.loading-students, .loading-data {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.spinner-small {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==================== EMPTY STATE ==================== */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+/* ==================== SCROLLBAR ==================== */
+.students-list::-webkit-scrollbar,
+.student-data::-webkit-scrollbar {
+    width: 8px;
+}
+
+.students-list::-webkit-scrollbar-track,
+.student-data::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.students-list::-webkit-scrollbar-thumb,
+.student-data::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+/* ==================== RESPONSIVO ==================== */
+@media (max-width: 768px) {
+    .fields-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .field {
+        flex-direction: column;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+    
+    .field-label {
+        min-width: auto;
+        margin-bottom: 2px;
+    }
+    
+    .field-value-wrapper {
+        width: 100%;
+    }
+    
+    .student-card-title {
+        font-size: 18px;
+    }
+    
+    .students-grid-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .turmas-buttons {
+        justify-content: center;
+    }
+    
+    .turma-btn {
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+    
+    .turmas-title {
+        justify-content: center;
+    }
+}

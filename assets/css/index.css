@@ -1,0 +1,240 @@
+/* =============================================
+   PAINEL DE PORTAIS EDUCACIONAIS - DESIGN PRO
+   ============================================= */
+
+.portais-section {
+    margin: 3rem 0 2rem;
+}
+
+.section-header {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-header h2 i {
+    color: #3b82f6;
+    font-size: 1.5rem;
+}
+
+.section-header p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-left: 2.25rem;
+}
+
+/* Grid dos Portais */
+.portais-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+/* Card Profissional */
+.portal-card-v2 {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    padding: 1.75rem 1.5rem;
+    text-decoration: none;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.portal-card-v2:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 30px -12px rgba(0, 0, 0, 0.15);
+    border-color: #cbd5e1;
+}
+
+/* Efeito de brilho no hover */
+.portal-hover-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.8), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+}
+
+.portal-card-v2:hover .portal-hover-effect {
+    opacity: 0.15;
+}
+
+/* Ícone */
+.portal-icon-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.portal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: white;
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+    position: relative;
+    z-index: 2;
+}
+
+.portal-card-v2:hover .portal-icon {
+    transform: scale(1.08) rotate(2deg);
+    box-shadow: 0 12px 25px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* Conteúdo */
+.portal-content {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.portal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.portal-header h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
+
+.badge-oficial {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.portal-content p {
+    color: #64748b;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    flex: 1;
+}
+
+/* Rodapé do Card */
+.portal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 1rem;
+    margin-top: auto;
+}
+
+.portal-url {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', monospace;
+    background: #f8fafc;
+    padding: 0.2rem 0.6rem;
+    border-radius: 30px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.portal-url i {
+    font-size: 0.6rem;
+    color: #3b82f6;
+}
+
+.portal-arrow {
+    width: 28px;
+    height: 28px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+}
+
+.portal-card-v2:hover .portal-arrow {
+    background: #3b82f6;
+    color: white;
+    transform: translateX(3px);
+}
+
+/* =============================================
+   RESPONSIVIDADE
+   ============================================= */
+
+@media (max-width: 1200px) {
+    .portais-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .portais-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .portal-card-v2 {
+        padding: 1.25rem;
+    }
+    
+    .portal-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .portal-header h3 {
+        font-size: 1.1rem;
+    }
+}
+
+/* =============================================
+   REMOVER ESTILOS ANTIGOS (se não for mais usar)
+   ============================================= */
+   
+/* Oculte os cards antigos se ainda estiverem no HTML */
+.stats-grid {
+    display: none;
+}
