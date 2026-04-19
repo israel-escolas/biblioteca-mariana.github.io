@@ -66,7 +66,7 @@ if (imagemInput) {
             return;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
+        if (file.size > 10 * 1024 * 1024) {
             mostrarNotificacao('❌ Imagem muito grande! Máximo 5MB.', 'error');
             this.value = '';
             if (previewContainer) previewContainer.style.display = 'none';
