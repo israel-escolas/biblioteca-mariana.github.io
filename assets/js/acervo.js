@@ -5,6 +5,7 @@
 // ✅ URLs separadas: CRUD (Sheets) e Upload (Drive)
 const API_URL        = 'https://script.google.com/macros/s/AKfycbwQE5Rh2LJlB0AGNQQwVHB0kFfrju8vzGhwxlsI6TwA9Tx5-iegXw91WXsGbEtJZEE/exec';
 const API_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbzeI5tgdhy2bmIsTe5H8FRBWM8EJWZOXUbiZu8Qe3qpqexyYBHSA2dA7TYzH8JCzOGX/exec';
+const API_EMPRESTIMO_URL = 'https://script.google.com/macros/s/AKfycbwd3FqoXj_PcSA3-y0Sprnajuwg-TSAF6vzQi18ufTQiQmOWCWAqiVsM3TY0YPRc0Q/exec';
 
 // ============== ELEMENTOS DO DOM ==============
 
@@ -17,10 +18,16 @@ const refreshButton    = document.getElementById('refreshBooks');
 const imagemInput      = document.getElementById('imagemLivro');
 const previewContainer = document.getElementById('previewContainer');
 const imagemPreview    = document.getElementById('imagemPreview');
-// ============== VARIÁVEIS DE BUSCA E FILTRO ==============
+const modalEmprestimo  = document.getElementById('modalEmprestimo');
+const formEmprestimo   = document.getElementById('formEmprestimo');
+
+// ============== VARIÁVEIS GLOBAIS ==============
 let livrosCompletos = []; // Armazena todos os livros carregados
 let categoriaAtiva = 'todos';
 let termoBusca = '';
+let livroAtualEmprestimo = null; // Guarda o livro selecionado para empréstimo
+let turmasDisponiveis = [];      // Lista de turmas
+let estudantesPorTurma = {};     // Cache de estudantes por turma
 
 // ============================================
 // CONVERTER LINKS DO DRIVE
@@ -619,52 +626,381 @@ async function excluirLivro(livro) {
     }
 }
 
+// ================================================
 // ============== MODAL DE EMPRÉSTIMO ==============
+// ================================================
 
-const modalEmprestimo = document.getElementById('modalEmprestimo');
+// Carregar turmas ao iniciar
+async function carregarTurmas() {
+    try {
+        const response = await fetch(`${API_EMPRESTIMO_URL}?action=getTurmas`);
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            turmasDisponiveis = resultado.data;
+            console.log('✅ Turmas carregadas:', turmasDisponiveis);
+        }
+    } catch (error) {
+        console.error('❌ Erro ao carregar turmas:', error);
+    }
+}
+
+// Carregar estudantes de uma turma específica
+async function carregarEstudantes(turma) {
+    try {
+        const response = await fetch(`${API_EMPRESTIMO_URL}?action=getEstudantes&turma=${encodeURIComponent(turma)}`);
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            estudantesPorTurma[turma] = resultado.data;
+            console.log(`✅ Estudantes carregados para ${turma}:`, resultado.data.length);
+            return resultado.data;
+        }
+        return [];
+    } catch (error) {
+        console.error('❌ Erro ao carregar estudantes:', error);
+        return [];
+    }
+}
+
+// Preencher select de turmas
+function preencherSelectTurmas() {
+    const selectTurma = document.getElementById('turma');
+    if (!selectTurma) return;
+    
+    selectTurma.innerHTML = '<option value="">Selecione a turma...</option>';
+    
+    turmasDisponiveis.forEach(turma => {
+        const option = document.createElement('option');
+        option.value = turma;
+        option.textContent = turma;
+        selectTurma.appendChild(option);
+    });
+}
+
+// Preencher datalist de estudantes
+function preencherDatalistEstudantes(estudantes) {
+    const datalist = document.getElementById('listaEstudantes');
+    if (!datalist) return;
+    
+    datalist.innerHTML = '';
+    
+    estudantes.forEach(est => {
+        const option = document.createElement('option');
+        option.value = est.nome;
+        datalist.appendChild(option);
+    });
+}
 
 function abrirModalEmprestimo(livro) {
     if (!modalEmprestimo) return;
+    
+    // Salvar o livro atual para uso no submit
+    livroAtualEmprestimo = livro;
 
     const inputLivro = document.getElementById('livro');
     if (inputLivro) inputLivro.value = livro.titulo || livro.TITULO || '';
 
-    const hoje      = new Date().toISOString().split('T')[0];
+    const hoje = new Date();
     const devolucao = new Date();
     devolucao.setDate(devolucao.getDate() + 15);
+    
+    const hojeStr = hoje.toISOString().split('T')[0];
+    const devolucaoStr = devolucao.toISOString().split('T')[0];
 
     const dataEmprestimo = document.getElementById('data_emprestimo');
-    const dataDevolucao  = document.getElementById('data_devolucao');
-    if (dataEmprestimo) dataEmprestimo.value = hoje;
-    if (dataDevolucao)  dataDevolucao.value  = devolucao.toISOString().split('T')[0];
-
+    const dataDevolucao = document.getElementById('data_devolucao');
+    
+    if (dataEmprestimo) dataEmprestimo.value = hojeStr;
+    if (dataDevolucao) dataDevolucao.value = devolucaoStr;
+    
+    // Limpar outros campos
+    const estudanteInput = document.getElementById('estudante');
+    const selectTurma = document.getElementById('turma');
+    const observacoesInput = document.getElementById('observacoes');
+    
+    if (estudanteInput) {
+        estudanteInput.value = '';
+        estudanteInput.disabled = true;
+        estudanteInput.placeholder = 'Selecione a turma primeiro';
+    }
+    if (selectTurma) selectTurma.value = '';
+    if (observacoesInput) observacoesInput.value = '';
+    
+    // Preencher select de turmas
+    if (turmasDisponiveis.length > 0) {
+        preencherSelectTurmas();
+    }
+    
+    // Limpar datalist de estudantes
+    const datalist = document.getElementById('listaEstudantes');
+    if (datalist) datalist.innerHTML = '';
+    
+    // Restaurar botão de submit se existir
+    const submitBtn = formEmprestimo?.querySelector('.btn-submit');
+    if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fas fa-save"></i> Registrar Empréstimo';
+        submitBtn.disabled = false;
+    }
+    
     modalEmprestimo.classList.add('active');
 }
 
 function closeModalEmprestimo() {
     if (!modalEmprestimo) return;
+    
+    // Fechar modal
     modalEmprestimo.classList.remove('active');
-    document.getElementById('formEmprestimo')?.reset();
+    
+    // Resetar formulário
+    if (formEmprestimo) {
+        formEmprestimo.reset();
+        
+        // Restaurar botão de submit
+        const submitBtn = formEmprestimo.querySelector('.btn-submit');
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-save"></i> Registrar Empréstimo';
+            submitBtn.disabled = false;
+        }
+    }
+    
+    // Limpar campos específicos
+    const estudanteInput = document.getElementById('estudante');
+    const selectTurma = document.getElementById('turma');
+    const datalist = document.getElementById('listaEstudantes');
+    
+    if (estudanteInput) {
+        estudanteInput.value = '';
+        estudanteInput.disabled = true;
+        estudanteInput.placeholder = 'Selecione a turma primeiro';
+    }
+    if (selectTurma) selectTurma.value = '';
+    if (datalist) datalist.innerHTML = '';
+    
+    livroAtualEmprestimo = null;
 }
 
+// Event listeners do modal de empréstimo
 if (modalEmprestimo) {
     document.getElementById('btnCloseModalEmprestimo')?.addEventListener('click', closeModalEmprestimo);
     document.getElementById('btnCancelModalEmprestimo')?.addEventListener('click', closeModalEmprestimo);
     modalEmprestimo.addEventListener('click', (e) => {
         if (e.target === modalEmprestimo) closeModalEmprestimo();
     });
+    
+    // Evento para quando a turma for selecionada
+    const selectTurma = document.getElementById('turma');
+    if (selectTurma) {
+        selectTurma.addEventListener('change', async (e) => {
+            const turmaSelecionada = e.target.value;
+            const estudanteInput = document.getElementById('estudante');
+            
+            if (!turmaSelecionada) {
+                // Limpar datalist se nenhuma turma selecionada
+                const datalist = document.getElementById('listaEstudantes');
+                if (datalist) datalist.innerHTML = '';
+                if (estudanteInput) {
+                    estudanteInput.value = '';
+                    estudanteInput.disabled = true;
+                    estudanteInput.placeholder = 'Selecione a turma primeiro';
+                }
+                return;
+            }
+            
+            // Mostrar loading no campo estudante
+            if (estudanteInput) {
+                estudanteInput.placeholder = 'Carregando estudantes...';
+                estudanteInput.disabled = true;
+            }
+            
+            // Carregar estudantes da turma selecionada
+            let estudantes = estudantesPorTurma[turmaSelecionada];
+            if (!estudantes) {
+                estudantes = await carregarEstudantes(turmaSelecionada);
+            }
+            
+            // Preencher datalist
+            preencherDatalistEstudantes(estudantes);
+            
+            // Habilitar campo
+            if (estudanteInput) {
+                estudanteInput.placeholder = 'Digite ou selecione o nome do estudante';
+                estudanteInput.disabled = false;
+                estudanteInput.focus();
+            }
+        });
+    }
 }
 
-const formEmprestimo = document.getElementById('formEmprestimo');
+// ================================================
+// ========= FUNÇÕES DE EMPRÉSTIMO ================
+// ================================================
+
+async function realizarEmprestimo(dadosEmprestimo) {
+    try {
+        const response = await fetch(API_EMPRESTIMO_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'addEmprestimo',
+                ...dadosEmprestimo
+            })
+        });
+
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            mostrarNotificacao(resultado.message, 'success');
+            closeModalEmprestimo();
+            setTimeout(() => carregarLivros(), 500);
+            return { success: true, data: resultado };
+        } else {
+            mostrarNotificacao(resultado.error, 'error');
+            return { success: false, error: resultado.error };
+        }
+        
+    } catch (error) {
+        console.error('Erro ao realizar empréstimo:', error);
+        mostrarNotificacao('Erro na conexão: ' + error.message, 'error');
+        return { success: false, error: error.message };
+    }
+}
+
+async function carregarEmprestimos(status = 'todos') {
+    try {
+        const response = await fetch(`${API_EMPRESTIMO_URL}?action=getEmprestimos&status=${status}`);
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            return resultado.data;
+        } else {
+            throw new Error(resultado.error);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar empréstimos:', error);
+        return [];
+    }
+}
+
+async function devolverLivro(id) {
+    try {
+        const response = await fetch(API_EMPRESTIMO_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'devolverLivro',
+                id: id
+            })
+        });
+
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            mostrarNotificacao(resultado.message, 'success');
+            return { success: true };
+        } else {
+            mostrarNotificacao(resultado.error, 'error');
+            return { success: false, error: resultado.error };
+        }
+        
+    } catch (error) {
+        console.error('Erro ao devolver livro:', error);
+        mostrarNotificacao('Erro na conexão: ' + error.message, 'error');
+        return { success: false, error: error.message };
+    }
+}
+
+// Handler do formulário de empréstimo (CORRIGIDO - BOTÃO NÃO TRAVA MAIS)
 if (formEmprestimo) {
-    formEmprestimo.addEventListener('submit', (e) => {
+    formEmprestimo.addEventListener('submit', async (e) => {
         e.preventDefault();
-        mostrarNotificacao('✅ Empréstimo registrado com sucesso!', 'success');
-        closeModalEmprestimo();
+        
+        // Encontrar o botão de submit
+        const submitBtn = formEmprestimo.querySelector('.btn-submit');
+        if (!submitBtn) {
+            console.error('Botão submit não encontrado!');
+            return;
+        }
+        
+        if (!livroAtualEmprestimo) {
+            mostrarNotificacao('❌ Nenhum livro selecionado!', 'error');
+            return;
+        }
+
+        const estudante = document.getElementById('estudante')?.value.trim();
+        const turma = document.getElementById('turma')?.value;
+        const dataEmprestimo = document.getElementById('data_emprestimo')?.value;
+        const dataDevolucao = document.getElementById('data_devolucao')?.value;
+        const observacoes = document.getElementById('observacoes')?.value.trim();
+
+        // Validações
+        if (!turma) {
+            mostrarNotificacao('❌ Selecione a turma!', 'error');
+            return;
+        }
+        
+        if (!estudante) {
+            mostrarNotificacao('❌ Informe o nome do estudante!', 'error');
+            return;
+        }
+        
+        // Verificar se o estudante existe na turma selecionada
+        const estudantesDaTurma = estudantesPorTurma[turma] || [];
+        const estudanteExiste = estudantesDaTurma.some(e => 
+            e.nome.toLowerCase() === estudante.toLowerCase()
+        );
+        
+        if (!estudanteExiste) {
+            mostrarNotificacao('❌ Estudante não encontrado na turma selecionada!', 'error');
+            return;
+        }
+
+        if (!dataEmprestimo || !dataDevolucao) {
+            mostrarNotificacao('❌ Datas inválidas!', 'error');
+            return;
+        }
+
+        if (new Date(dataDevolucao) <= new Date(dataEmprestimo)) {
+            mostrarNotificacao('❌ Data de devolução deve ser posterior à data de empréstimo!', 'error');
+            return;
+        }
+
+        // Guardar o HTML original do botão
+        const originalHTML = submitBtn.innerHTML;
+        
+        // Desabilitar botão e mostrar loading
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+        submitBtn.disabled = true;
+
+        try {
+            const resultado = await realizarEmprestimo({
+                livro: livroAtualEmprestimo.titulo || livroAtualEmprestimo.TITULO,
+                estudante: estudante,
+                turma: turma,
+                data_emprestimo: dataEmprestimo,
+                data_devolucao: dataDevolucao,
+                observacoes: observacoes
+            });
+
+            if (!resultado.success) {
+                // Restaurar botão em caso de erro
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+            }
+            // Se sucesso, o modal fecha e o botão é restaurado no closeModalEmprestimo()
+            
+        } catch (error) {
+            console.error('Erro no submit:', error);
+            // Restaurar botão em caso de erro
+            submitBtn.innerHTML = originalHTML;
+            submitBtn.disabled = false;
+            mostrarNotificacao('❌ Erro ao processar empréstimo!', 'error');
+        }
     });
 }
 
-// ============== NOTIFICAÇÕES ==============
+// ================================================
+// ============== NOTIFICAÇÕES ====================
+// ================================================
 
 function mostrarNotificacao(mensagem, tipo = 'info') {
     const icone = tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : 'info-circle';
@@ -693,14 +1029,19 @@ function mostrarNotificacao(mensagem, tipo = 'info') {
     setTimeout(() => notificacao.remove(), 3500);
 }
 
-// ============== INICIALIZAÇÃO ==============
+// ================================================
+// ============== INICIALIZAÇÃO ===================
+// ================================================
 
 if (refreshButton) {
     refreshButton.addEventListener('click', carregarLivros);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Sistema iniciado!');
+    
+    // Carregar turmas ao iniciar
+    await carregarTurmas();
     
     // Inicializa busca e filtros
     inicializarBuscaEFiltros();

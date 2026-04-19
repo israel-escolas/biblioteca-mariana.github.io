@@ -1,0 +1,198 @@
+// ============================================
+// SISTEMA DE BIBLIOTECA - Google Apps Script
+// ============================================
+
+const CONFIG = {
+  SPREADSHEET_ID: '1ypAr72q3K43OH_P7_fw57WCFiU3t1NpldKxOdMAI0eY',
+  SHEET_NAME: 'livros',
+  DRIVE_FOLDER_ID: '1AQv6okGDhUHEuFH5yo7s66BFRYXE3TNv'
+};
+
+// ============================================
+// ROTEAMENTO GET
+// ============================================
+
+function doGet(e) {
+  try {
+    const action = e?.parameter?.action;
+
+    if (action === 'getAllBooks') {
+      const books = getAllBooks();
+      return jsonResponse({ success: true, data: books });
+    }
+
+    return jsonResponse({ status: 'API OK' });
+
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.toString() });
+  }
+}
+
+// ============================================
+// ROTEAMENTO POST
+// ============================================
+
+function doPost(e) {
+  try {
+    // 1. Verificar FormData PRIMEIRO (upload de imagem)
+    if (e.parameter && e.parameter.data) {
+      return fazerUploadFormData(e);
+    }
+
+    // 2. Verificar JSON
+    const postData = e?.postData?.contents;
+    if (!postData) {
+      return jsonResponse({ success: false, error: 'Nenhum dado recebido.' });
+    }
+
+    const dados = JSON.parse(postData);
+    const { action } = dados;
+
+    if (action === 'addBook')    return adicionarLivro(dados);
+    if (action === 'deleteBook') return deletarLivro(dados.cbl);
+
+    return jsonResponse({ success: false, error: 'Ação não reconhecida: ' + action });
+
+  } catch (error) {
+    return jsonResponse({ success: false, error: error.toString() });
+  }
+}
+
+// ============================================
+// UPLOAD DE IMAGEM (FormData)
+// ============================================
+
+function fazerUploadFormData(e) {
+  try {
+    const data = Utilities.base64Decode(e.parameter.data);
+    const mime = e.parameter.mime || 'image/jpeg';
+    const name = e.parameter.name || 'imagem_' + new Date().getTime();
+
+    const fileBlob = Utilities.newBlob(data, mime, name);
+    const folder   = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
+    const file     = folder.createFile(fileBlob);
+
+    // Tornar público para visualização
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    // ✅ URL direta para exibição (não a URL de edição do Drive)
+    const directUrl = 'https://drive.google.com/uc?export=view&id=' + file.getId();
+
+    return jsonResponse({
+      status: 'ok',
+      url:    directUrl,
+      id:     file.getId()
+    });
+
+  } catch (error) {
+    return jsonResponse({ status: 'error', message: error.toString() });
+  }
+}
+
+// ============================================
+// LISTAR TODOS OS LIVROS
+// ============================================
+
+function getAllBooks() {
+  const sheet = getSheet();
+  if (!sheet) return [];
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+
+  const data    = sheet.getRange(1, 1, lastRow, sheet.getLastColumn()).getValues();
+  const headers = data[0];
+
+  return data
+    .slice(1)
+    .filter(row => row[0] !== '')
+    .map(row => {
+      const book = {};
+      headers.forEach((h, i) => book[h] = row[i] !== undefined ? row[i] : '');
+      return book;
+    });
+}
+
+// ============================================
+// ADICIONAR LIVRO
+// ============================================
+
+function adicionarLivro(dados) {
+  const sheet = getSheet();
+  if (!sheet) {
+    return jsonResponse({ success: false, error: 'Planilha não encontrada.' });
+  }
+
+  // Verificar CBL duplicado (comparação segura como string)
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][2]) === String(dados.cbl)) {
+      return jsonResponse({ success: false, error: 'CBL já cadastrado!' });
+    }
+  }
+
+  sheet.appendRow([
+    dados.autor      || '',
+    dados.titulo     || '',
+    dados.cbl        || '',
+    dados.categoria  || '',
+    dados.ano        || '',
+    dados.editora    || '',
+    dados.quantidade || 0,
+    dados.link       || ''
+  ]);
+
+  return jsonResponse({ success: true, message: 'Livro adicionado com sucesso!' });
+}
+
+// ============================================
+// DELETAR LIVRO
+// ============================================
+
+function deletarLivro(cbl) {
+  if (!cbl) {
+    return jsonResponse({ success: false, error: 'CBL não informado.' });
+  }
+
+  const sheet = getSheet();
+  if (!sheet) {
+    return jsonResponse({ success: false, error: 'Planilha não encontrada.' });
+  }
+
+  const data = sheet.getDataRange().getValues();
+
+  // Percorrer de baixo para cima para não deslocar índices ao deletar
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (String(data[i][2]) === String(cbl)) {
+      sheet.deleteRow(i + 1);
+      return jsonResponse({ success: true, message: 'Livro removido com sucesso!' });
+    }
+  }
+
+  return jsonResponse({ success: false, error: 'Livro não encontrado.' });
+}
+
+// ============================================
+// UTILITÁRIOS
+// ============================================
+
+/**
+ * Retorna a planilha configurada, ou null se não existir.
+ */
+function getSheet() {
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    return ss.getSheetByName(CONFIG.SHEET_NAME);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Cria uma resposta JSON padronizada.
+ */
+function jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}

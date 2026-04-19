@@ -712,3 +712,32 @@ textarea {
         padding: 6px 12px;
     }
 }
+/* ============================================
+   COMPLEMENTOS PARA O MODAL DE EMPRÉSTIMO
+   ============================================ */
+
+/* 1. Linha com 2 colunas (para as datas) */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* 2. Campo somente leitura com fundo cinza */
+input[readonly] {
+    background-color: #f5f5f5 !important;
+    cursor: not-allowed !important;
+}
+
+/* 3. Ajuste de largura para o modal de empréstimo */
+#modalEmprestimo .modal-container {
+    max-width: 550px;
+}
+
+/* 4. Responsividade para as datas em telas pequenas */
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}

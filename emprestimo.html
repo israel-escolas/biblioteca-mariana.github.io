@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Biblioteca Escolar - Empréstimos</title>
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/emprestimo.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -76,7 +77,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Empréstimos Ativos</h3>
-                    <div class="stat-number">24</div>
+                    <div class="stat-number">...</div>
                 </div>
                 <div class="stat-icon">
                     <i class="fas fa-book-open"></i>
@@ -85,7 +86,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Empréstimos Hoje</h3>
-                    <div class="stat-number">3</div>
+                    <div class="stat-number">...</div>
                 </div>
                 <div class="stat-icon">
                     <i class="fas fa-calendar-day"></i>
@@ -94,7 +95,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Atrasados</h3>
-                    <div class="stat-number">2</div>
+                    <div class="stat-number">...</div>
                 </div>
                 <div class="stat-icon">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -103,7 +104,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Total de Empréstimos</h3>
-                    <div class="stat-number">156</div>
+                    <div class="stat-number">...</div>
                 </div>
                 <div class="stat-icon">
                     <i class="fas fa-chart-line"></i>
@@ -289,15 +290,12 @@
                             <h4>Informações do Livro</h4>
                         </div>
                         <div class="detalhes-content">
-                            <p><strong>Título:</strong> <span id="detalhe_livro">O Nome do Vento</span></p>
-                            <p><strong>Autor:</strong> Patrick Rothfuss</p>
-                            <p><strong>CBL:</strong> 978-85-1234-567-8</p>
-                            <p><strong>Categoria:</strong> Fantasia</p>
-                            <p><strong>Editora:</strong> Arqueiro</p>
+                            <p><strong>Título:</strong> <span id="detalhe_livro">-</span></p>
+                            <p><strong>Autor:</strong> <span id="detalhe_autor">-</span></p>
+                            <p><strong>CBL:</strong> <span id="detalhe_cbl">-</span></p>
+                            <p><strong>Categoria:</strong> <span id="detalhe_categoria">-</span></p>
+                            <p><strong>Editora:</strong> <span id="detalhe_editora">-</span></p>
                         </div>
-                        <button class="btn-link" onclick="alert('Ver mais detalhes do livro')">
-                            <i class="fas fa-external-link-alt"></i> Ver mais
-                        </button>
                     </div>
 
                     <!-- Informações do Estudante -->
@@ -307,15 +305,12 @@
                             <h4>Informações do Estudante</h4>
                         </div>
                         <div class="detalhes-content">
-                            <p><strong>Nome:</strong> <span id="detalhe_estudante">Ana Beatriz Silva</span></p>
-                            <p><strong>Matrícula:</strong> 202400123</p>
-                            <p><strong>Turma:</strong> 3º Ano A</p>
-                            <p><strong>Telefone:</strong> (11) 99999-9999</p>
-                            <p><strong>Email:</strong> ana.silva@escola.com</p>
+                            <p><strong>Nome:</strong> <span id="detalhe_estudante">-</span></p>
+                            <p><strong>Matrícula:</strong> <span id="detalhe_matricula">-</span></p>
+                            <p><strong>Turma:</strong> <span id="detalhe_turma">-</span></p>
+                            <p><strong>Telefone:</strong> <span id="detalhe_telefone">-</span></p>
+                            <p><strong>Email:</strong> <span id="detalhe_email">-</span></p>
                         </div>
-                        <button class="btn-link" onclick="alert('Ver mais detalhes do estudante')">
-                            <i class="fas fa-external-link-alt"></i> Ver mais
-                        </button>
                     </div>
 
                     <!-- Informações do Empréstimo -->
@@ -327,19 +322,27 @@
                         <div class="info-emprestimo-grid">
                             <div class="info-field">
                                 <label>Data do Empréstimo:</label>
-                                <p>15/03/2024</p>
+                                <p id="detalhe_data_emprestimo">-</p>
                             </div>
                             <div class="info-field">
                                 <label>Data Prevista Devolução:</label>
-                                <p>30/03/2024</p>
+                                <p id="detalhe_data_prevista">-</p>
+                            </div>
+                            <div class="info-field">
+                                <label>Data Devolução Real:</label>
+                                <p id="detalhe_data_devolucao_real">-</p>
                             </div>
                             <div class="info-field">
                                 <label>Status:</label>
-                                <p><span class="status-badge-small active">Em andamento</span></p>
+                                <p id="detalhe_status">-</p>
+                            </div>
+                            <div class="info-field">
+                                <label>Registro:</label>
+                                <p id="detalhe_registro">-</p>
                             </div>
                             <div class="info-field full-width">
                                 <label>Observações:</label>
-                                <p>Livro em bom estado. Estudante realizou empréstimo pela primeira vez.</p>
+                                <p id="detalhe_observacoes">-</p>
                             </div>
                         </div>
                     </div>
@@ -349,38 +352,13 @@
                 <button class="btn-cancel" onclick="closeModalDetalhes()">
                     <i class="fas fa-times"></i> Fechar
                 </button>
-                <button class="btn-return" onclick="alert('Registrar devolução')">
+                <button class="btn-return" onclick="devolverDoModal()">
                     <i class="fas fa-undo-alt"></i> Registrar Devolução
-                </button>
-                <button class="btn-cancel-action" onclick="alert('Cancelar empréstimo')">
-                    <i class="fas fa-ban"></i> Cancelar Empréstimo
                 </button>
             </div>
         </div>
     </div>
 
-    <script>
-        function openModalDetalhes(id) {
-            const modal = document.getElementById('modalDetalhes');
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            
-            // Aqui você pode carregar os dados dinâmicos baseado no ID
-            console.log('Abrindo detalhes do empréstimo:', id);
-        }
-        
-        function closeModalDetalhes() {
-            const modal = document.getElementById('modalDetalhes');
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        // Fechar modal clicando fora (opcional)
-        document.getElementById('modalDetalhes').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModalDetalhes();
-            }
-        });
-    </script>
+    <script src="assets/js/emprestimo.js"></script>
 </body>
 </html>
