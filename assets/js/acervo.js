@@ -1,14 +1,3 @@
-// ============================================
-// SISTEMA DE BIBLIOTECA - acervo.js
-// ============================================
-
-// ✅ URLs separadas: CRUD (Sheets) e Upload (Drive)
-const API_URL        = 'https://script.google.com/macros/s/AKfycbwQE5Rh2LJlB0AGNQQwVHB0kFfrju8vzGhwxlsI6TwA9Tx5-iegXw91WXsGbEtJZEE/exec';
-const API_UPLOAD_URL = 'https://script.google.com/macros/s/AKfycbzeI5tgdhy2bmIsTe5H8FRBWM8EJWZOXUbiZu8Qe3qpqexyYBHSA2dA7TYzH8JCzOGX/exec';
-const API_EMPRESTIMO_URL = 'https://script.google.com/macros/s/AKfycbwd3FqoXj_PcSA3-y0Sprnajuwg-TSAF6vzQi18ufTQiQmOWCWAqiVsM3TY0YPRc0Q/exec';
-
-// ============== ELEMENTOS DO DOM ==============
-
 const btnAddLivro      = document.getElementById('btnAddLivro');
 const modal            = document.getElementById('modalLivro');
 const btnCloseModal    = document.getElementById('btnCloseModal');
@@ -22,12 +11,12 @@ const modalEmprestimo  = document.getElementById('modalEmprestimo');
 const formEmprestimo   = document.getElementById('formEmprestimo');
 
 // ============== VARIÁVEIS GLOBAIS ==============
-let livrosCompletos = []; // Armazena todos os livros carregados
+let livrosCompletos = []; 
 let categoriaAtiva = 'todos';
 let termoBusca = '';
-let livroAtualEmprestimo = null; // Guarda o livro selecionado para empréstimo
-let turmasDisponiveis = [];      // Lista de turmas
-let estudantesPorTurma = {};     // Cache de estudantes por turma
+let livroAtualEmprestimo = null; 
+let turmasDisponiveis = [];      
+let estudantesPorTurma = {};     
 
 // ============================================
 // CONVERTER LINKS DO DRIVE
@@ -130,7 +119,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ============== UPLOAD DE IMAGEM ==============
+// ============== CONVERSÃO DE ARQUIVO PARA BASE64 ==============
 
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -140,6 +129,8 @@ function fileToBase64(file) {
         reader.readAsDataURL(file);
     });
 }
+
+// ============== UPLOAD DE IMAGEM (COM FOLDER ID) ==============
 
 async function uploadImagem(file, nomeArquivo) {
     try {
@@ -152,14 +143,17 @@ async function uploadImagem(file, nomeArquivo) {
         formData.append('data', base64Puro);
         formData.append('name', nomeArquivo);
         formData.append('mime', file.type);
+        formData.append('folderId', PASTAS_DRIVE.LIVROS);  // ← ENVIA O ID DA PASTA DE LIVROS
 
         const response  = await fetch(API_UPLOAD_URL, { method: 'POST', body: formData });
         const resultado = await response.json();
 
         console.log('📨 Resposta do upload:', resultado);
 
-        if (resultado.status === 'ok') {
-            return { success: true, url: resultado.url };
+        // Aceita tanto 'ok' quanto 'success' e pega a URL correta
+        if (resultado.status === 'ok' || resultado.success) {
+            const url = resultado.url || resultado.link || '';
+            return { success: true, url: url };
         } else {
             return { success: false, error: resultado.message || 'Erro no upload' };
         }

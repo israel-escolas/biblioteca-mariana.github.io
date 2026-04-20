@@ -1,13 +1,3 @@
-// ============================================
-// SISTEMA DE BIBLIOTECA - emprestimo.js
-// ============================================
-
-// ✅ URLs das APIs
-const API_EMPRESTIMO_URL = 'https://script.google.com/macros/s/AKfycbwd3FqoXj_PcSA3-y0Sprnajuwg-TSAF6vzQi18ufTQiQmOWCWAqiVsM3TY0YPRc0Q/exec';
-const API_ACERVO_URL = 'https://script.google.com/macros/s/AKfycbwQE5Rh2LJlB0AGNQQwVHB0kFfrju8vzGhwxlsI6TwA9Tx5-iegXw91WXsGbEtJZEE/exec';
-const API_ESTUDANTES_URL = 'https://script.google.com/macros/s/AKfycbzzeQ5FN6nKHpggycIod9IxiDOHdZkBVdYn0BRIg608eNWt6QhEFCLyFlig3lhKUq4/exec';
-
-// Mapeamento das turmas para os IDs das planilhas
 const TURMAS_IDS = {
     '1M': { nome: '1ª Série Matutino', id: '1Yhi51PoQYXkhzCH3Bo6W3NLSqeKnIXGaX7FgA3huMro' },
     '1V': { nome: '1ª Série Vespertino', id: '1jL-iasMF06dJY0FCkM3PIqX0jjq0AhzBP5G_PVfpW-U' },
@@ -17,7 +7,6 @@ const TURMAS_IDS = {
     '3V': { nome: '3ª Série Vespertino', id: '15hDH4Pv9wZmLxMIedgQt3Pos-BsWHjWbD544tl8oBd8' }
 };
 
-// Mapeamento do nome da turma para o código
 const TURMA_PARA_CODIGO = {
     '1º ANO MATUTINO': '1M',
     '1º ANO VESPERTINO': '1V',
@@ -33,7 +22,6 @@ const TURMA_PARA_CODIGO = {
     '3V': '3V'
 };
 
-// ============== VARIÁVEIS GLOBAIS ==============
 let emprestimosAtuais = [];
 let statusFiltro = 'todos';
 let termoBusca = '';
@@ -42,7 +30,6 @@ let termoBusca = '';
 const cacheLivros = {};
 const cacheEstudantes = {};
 
-// Mapeamento de colunas (como estão na planilha)
 const COLUNAS = {
     ID: 'codigo',
     LIVRO: 'LIVRO',
@@ -56,7 +43,6 @@ const COLUNAS = {
     REGISTRO: 'REGISTRO'
 };
 
-// ============== ELEMENTOS DO DOM ==============
 const emprestimosContainer = document.querySelector('.emprestimos-container');
 const searchInput = document.querySelector('.search-box input');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -67,20 +53,12 @@ const statsCards = {
     total: document.querySelector('.stat-card:nth-child(4) .stat-number')
 };
 
-// ============================================
-// INICIALIZAÇÃO
-// ============================================
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Sistema de Empréstimos iniciado!');
     configurarFiltros();
     configurarBusca();
     carregarEmprestimos();
 });
-
-// ============================================
-// CONFIGURAR FILTROS
-// ============================================
 
 function configurarFiltros() {
     filterBtns.forEach(btn => {
@@ -100,10 +78,6 @@ function configurarFiltros() {
     });
 }
 
-// ============================================
-// CONFIGURAR BUSCA
-// ============================================
-
 function configurarBusca() {
     if (!searchInput) return;
     
@@ -112,10 +86,6 @@ function configurarBusca() {
         aplicarFiltros();
     });
 }
-
-// ============================================
-// CARREGAR EMPRÉSTIMOS
-// ============================================
 
 async function carregarEmprestimos() {
     try {
@@ -143,10 +113,6 @@ async function carregarEmprestimos() {
     }
 }
 
-// ============================================
-// NORMALIZAR EMPRÉSTIMO
-// ============================================
-
 function normalizarEmprestimo(item) {
     return {
         id: item.codigo || item.ID || item.id,
@@ -163,10 +129,6 @@ function normalizarEmprestimo(item) {
     };
 }
 
-// ============================================
-// MOSTRAR LOADING
-// ============================================
-
 function mostrarLoading() {
     if (!emprestimosContainer) return;
     
@@ -177,10 +139,6 @@ function mostrarLoading() {
         </div>
     `;
 }
-
-// ============================================
-// MOSTRAR ERRO
-// ============================================
 
 function mostrarErro(mensagem) {
     if (!emprestimosContainer) return;
@@ -195,10 +153,6 @@ function mostrarErro(mensagem) {
         </div>
     `;
 }
-
-// ============================================
-// ATUALIZAR ESTATÍSTICAS
-// ============================================
 
 function atualizarEstatisticas(emprestimos) {
     console.log('📊 Atualizando estatísticas com', emprestimos.length, 'empréstimos');
@@ -241,10 +195,6 @@ function atualizarEstatisticas(emprestimos) {
         statsCards.atrasados.textContent = atrasados.length;
     }
 }
-
-// ============================================
-// APLICAR FILTROS
-// ============================================
 
 function aplicarFiltros() {
     console.log('🔍 Aplicando filtros - Status:', statusFiltro, 'Busca:', termoBusca);
@@ -291,10 +241,6 @@ function aplicarFiltros() {
     exibirEmprestimos(emprestimosFiltrados);
 }
 
-// ============================================
-// EXIBIR EMPRÉSTIMOS
-// ============================================
-
 function exibirEmprestimos(emprestimos) {
     if (!emprestimosContainer) return;
     
@@ -314,10 +260,6 @@ function exibirEmprestimos(emprestimos) {
         emprestimosContainer.appendChild(criarCardEmprestimo(emprestimo));
     });
 }
-
-// ============================================
-// CRIAR CARD DE EMPRÉSTIMO
-// ============================================
 
 function criarCardEmprestimo(emprestimo) {
     const card = document.createElement('div');
@@ -422,10 +364,6 @@ function criarCardEmprestimo(emprestimo) {
     return card;
 }
 
-// ============================================
-// FORMATAR DATA
-// ============================================
-
 function formatarData(dataString) {
     if (!dataString) return 'N/A';
     
@@ -442,10 +380,6 @@ function formatarData(dataString) {
         return dataString;
     }
 }
-
-// ============================================
-// FORMATAR DATA COMPLETA
-// ============================================
 
 function formatarDataCompleta(dataString) {
     if (!dataString) return 'Não informado';
@@ -464,10 +398,6 @@ function formatarDataCompleta(dataString) {
         return dataString;
     }
 }
-
-// ============================================
-// FORMATAR DATA E HORA
-// ============================================
 
 function formatarDataHora(data) {
     if (!data) return 'Não informado';
@@ -489,10 +419,6 @@ function formatarDataHora(data) {
     }
 }
 
-// ============================================
-// BUSCAR DETALHES DO LIVRO NO ACERVO
-// ============================================
-
 async function buscarDetalhesLivro(tituloLivro) {
     if (cacheLivros[tituloLivro]) {
         console.log('📚 Livro encontrado no cache:', tituloLivro);
@@ -502,7 +428,7 @@ async function buscarDetalhesLivro(tituloLivro) {
     try {
         console.log('🔍 Buscando detalhes do livro:', tituloLivro);
         
-        const response = await fetch(`${API_ACERVO_URL}?action=getAllBooks`);
+        const response = await fetch(`${API_URL}?action=getAllBooks`);
         const resultado = await response.json();
         
         if (resultado.success) {
@@ -537,10 +463,6 @@ async function buscarDetalhesLivro(tituloLivro) {
     }
 }
 
-// ============================================
-// FUNÇÃO AUXILIAR PARA JSONP (CASO NECESSÁRIO)
-// ============================================
-
 async function fetchJSONP(url) {
     return new Promise((resolve, reject) => {
         const callbackName = 'callback_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -571,10 +493,6 @@ async function fetchJSONP(url) {
     });
 }
 
-// ============================================
-// BUSCAR DETALHES DO ESTUDANTE (CORRIGIDO - USA LISTA PRIMEIRO)
-// ============================================
-
 async function buscarDetalhesEstudante(nomeEstudante, turma) {
     const cacheKey = `${nomeEstudante}_${turma}`;
     
@@ -584,7 +502,6 @@ async function buscarDetalhesEstudante(nomeEstudante, turma) {
     }
     
     try {
-        // Mapear a turma para o código
         const codigoTurma = TURMA_PARA_CODIGO[turma] || turma;
         const turmaInfo = TURMAS_IDS[codigoTurma];
         
@@ -597,17 +514,14 @@ async function buscarDetalhesEstudante(nomeEstudante, turma) {
         console.log('📊 Turma:', turma, '| Código:', codigoTurma);
         console.log('📁 Planilha ID:', turmaInfo.id);
         
-        // PASSO 1: Buscar a lista de estudantes (nomes das abas)
         const listUrl = `${API_ESTUDANTES_URL}?action=list&spreadsheetId=${turmaInfo.id}`;
         console.log('📡 Buscando lista:', listUrl);
         
         let listaData;
         try {
-            // Tentar com JSONP primeiro
             listaData = await fetchJSONP(listUrl);
         } catch (jsonpError) {
             console.log('⚠️ JSONP falhou, tentando fetch normal...');
-            // Fallback para fetch normal
             const response = await fetch(listUrl);
             listaData = await response.json();
         }
@@ -626,9 +540,7 @@ async function buscarDetalhesEstudante(nomeEstudante, turma) {
             console.warn('⚠️ Nenhum estudante encontrado na turma');
             return null;
         }
-        
-        // PASSO 2: Encontrar o nome exato do estudante (case insensitive)
-        // A API de lista retorna os nomes EXATOS das abas
+
         const nomeExato = estudantes.find(nome => 
             nome.toLowerCase() === nomeEstudante.toLowerCase() ||
             nome.toLowerCase().includes(nomeEstudante.toLowerCase()) ||
@@ -643,7 +555,6 @@ async function buscarDetalhesEstudante(nomeEstudante, turma) {
         
         console.log('✅ Nome exato encontrado:', nomeExato);
         
-        // PASSO 3: Buscar os dados completos do estudante
         const getUrl = `${API_ESTUDANTES_URL}?action=get&spreadsheetId=${turmaInfo.id}&student=${encodeURIComponent(nomeExato)}`;
         console.log('📡 Buscando dados:', getUrl);
         
@@ -663,7 +574,6 @@ async function buscarDetalhesEstudante(nomeEstudante, turma) {
             return null;
         }
         
-        // Extrair informações relevantes
         const detalhes = {
             nome: dadosEstudante.nome || nomeExato,
             matricula: dadosEstudante.matricula || 'Não informado',
@@ -700,10 +610,6 @@ async function buscarDetalhesEstudante(nomeEstudante, turma) {
     }
 }
 
-// ============================================
-// ABRIR MODAL DE DETALHES (VERSÃO COMPLETA)
-// ============================================
-
 async function abrirModalDetalhes(id) {
     console.log('🔍 Buscando empréstimo com ID:', id);
     
@@ -717,14 +623,12 @@ async function abrirModalDetalhes(id) {
     
     console.log('✅ Empréstimo encontrado:', emprestimo);
     
-    // Abrir modal imediatamente com loading
     const modal = document.getElementById('modalDetalhes');
     if (modal) {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
     
-    // ========== INFORMAÇÕES DO LIVRO (BUSCAR DA API) ==========
     const livroTitulo = document.getElementById('detalhe_livro');
     const livroAutor = document.getElementById('detalhe_autor');
     const livroCBL = document.getElementById('detalhe_cbl');
@@ -753,7 +657,6 @@ async function abrirModalDetalhes(id) {
         }
     }
     
-    // ========== INFORMAÇÕES DO ESTUDANTE (BUSCAR DA API) ==========
     const estudanteNome = document.getElementById('detalhe_estudante');
     const estudanteMatricula = document.getElementById('detalhe_matricula');
     const estudanteTurma = document.getElementById('detalhe_turma');
@@ -790,7 +693,6 @@ async function abrirModalDetalhes(id) {
         }
     }
     
-    // ========== INFORMAÇÕES DO EMPRÉSTIMO ==========
     const dataEmprestimo = document.getElementById('detalhe_data_emprestimo');
     const dataPrevista = document.getElementById('detalhe_data_prevista');
     const dataDevolucaoReal = document.getElementById('detalhe_data_devolucao_real');
@@ -849,11 +751,9 @@ async function abrirModalDetalhes(id) {
         registro.textContent = emprestimo.registro || formatarDataHora(new Date());
     }
     
-    // Guardar o ID atual para ações no modal
     window.emprestimoAtualId = id;
     window.emprestimoAtual = emprestimo;
     
-    // Atualizar botões do modal
     const btnDevolver = document.querySelector('.modal-footer .btn-return');
     
     if (emprestimo.status === 'DEVOLVIDO') {
@@ -877,10 +777,6 @@ function closeModalDetalhes() {
     }
 }
 
-// ============================================
-// DEVOLVER DO MODAL
-// ============================================
-
 function devolverDoModal() {
     if (!window.emprestimoAtualId || !window.emprestimoAtual) {
         mostrarNotificacao('Nenhum empréstimo selecionado!', 'error');
@@ -891,10 +787,6 @@ function devolverDoModal() {
     confirmarDevolucao(window.emprestimoAtualId, window.emprestimoAtual.livro);
 }
 
-// ============================================
-// CONFIRMAR DEVOLUÇÃO
-// ============================================
-
 function confirmarDevolucao(id, livro) {
     if (!confirm(`Confirmar devolução do livro "${livro}"?`)) {
         return;
@@ -902,10 +794,6 @@ function confirmarDevolucao(id, livro) {
     
     devolverLivro(id);
 }
-
-// ============================================
-// DEVOLVER LIVRO
-// ============================================
 
 async function devolverLivro(id) {
     try {
@@ -937,10 +825,6 @@ async function devolverLivro(id) {
         mostrarNotificacao('Erro na conexão: ' + error.message, 'error');
     }
 }
-
-// ============================================
-// NOTIFICAÇÕES
-// ============================================
 
 function mostrarNotificacao(mensagem, tipo = 'info') {
     const icone = tipo === 'success' ? 'check-circle' : 
@@ -975,7 +859,6 @@ function mostrarNotificacao(mensagem, tipo = 'info') {
     }, 3500);
 }
 
-// Adicionar animações para notificações
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
@@ -989,17 +872,12 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ============================================
-// EXPOR FUNÇÕES GLOBAIS
-// ============================================
-
 window.abrirModalDetalhes = abrirModalDetalhes;
 window.closeModalDetalhes = closeModalDetalhes;
 window.confirmarDevolucao = confirmarDevolucao;
 window.carregarEmprestimos = carregarEmprestimos;
 window.devolverDoModal = devolverDoModal;
 
-// Configurar evento de fechar modal ao clicar fora
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modalDetalhes');
     if (modal) {

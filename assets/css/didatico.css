@@ -1,0 +1,291 @@
+.didatico-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    border-left: 4px solid #8b5cf6;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease;
+}
+
+.didatico-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Cabeçalho do Card */
+.didatico-card .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.didatico-card .card-header i {
+    font-size: 1.8rem;
+    color: #8b5cf6;
+    background: #f3e8ff;
+    padding: 8px;
+    border-radius: 10px;
+    min-width: 45px;
+    text-align: center;
+}
+
+.didatico-card .card-header h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+/* Corpo do Card */
+.didatico-card .card-body {
+    flex: 1;
+    margin-bottom: 12px;
+}
+
+.didatico-card .info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.didatico-card .info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.didatico-card .info-item i {
+    width: 18px;
+    color: #8b5cf6;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.didatico-card .info-item span {
+    flex: 1;
+}
+
+/* Badge de Quantidade */
+.didatico-card .quantidade-badge {
+    background: #f3e8ff;
+    color: #8b5cf6;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.didatico-card .card-footer {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+}
+
+.didatico-card .card-footer button {
+    flex: 1;
+    min-width: 45px;
+    padding: 6px 3px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.didatico-card .card-footer button i {
+    font-size: 0.7rem;
+}
+
+/* Botão Editar */
+.didatico-card .btn-edit {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.didatico-card .btn-edit:hover {
+    background: #cbd5e1;
+}
+
+/* Botão Adicionar */
+.didatico-card .btn-add {
+    background: #10b981;
+    color: white;
+}
+
+.didatico-card .btn-add:hover {
+    background: #059669;
+}
+
+/* Botão Excluir */
+.didatico-card .btn-delete {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.didatico-card .btn-delete:hover {
+    background: #fecaca;
+}
+
+.didatico-card.disciplina-fisica { border-left-color: #0284c7; }
+.didatico-card.disciplina-fisica .card-header i { color: #0284c7; background: #e0f2fe; }
+.didatico-card.disciplina-fisica .quantidade-badge { background: #e0f2fe; color: #0284c7; }
+.didatico-card.disciplina-fisica .info-item i { color: #0284c7; }
+
+.didatico-card.disciplina-portugues { border-left-color: #ef4444; }
+.didatico-card.disciplina-portugues .card-header i { color: #ef4444; background: #fee2e2; }
+.didatico-card.disciplina-portugues .quantidade-badge { background: #fee2e2; color: #ef4444; }
+.didatico-card.disciplina-portugues .info-item i { color: #ef4444; }
+
+.didatico-card.disciplina-matematica { border-left-color: #3b82f6; }
+.didatico-card.disciplina-matematica .card-header i { color: #3b82f6; background: #dbeafe; }
+.didatico-card.disciplina-matematica .quantidade-badge { background: #dbeafe; color: #3b82f6; }
+.didatico-card.disciplina-matematica .info-item i { color: #3b82f6; }
+
+.didatico-card.disciplina-sociologia { border-left-color: #f59e0b; }
+.didatico-card.disciplina-sociologia .card-header i { color: #f59e0b; background: #fef3c7; }
+.didatico-card.disciplina-sociologia .quantidade-badge { background: #fef3c7; color: #f59e0b; }
+.didatico-card.disciplina-sociologia .info-item i { color: #f59e0b; }
+
+.didatico-card.disciplina-filosofia { border-left-color: #8b5cf6; }
+.didatico-card.disciplina-filosofia .card-header i { color: #8b5cf6; background: #ede9fe; }
+.didatico-card.disciplina-filosofia .quantidade-badge { background: #ede9fe; color: #8b5cf6; }
+.didatico-card.disciplina-filosofia .info-item i { color: #8b5cf6; }
+
+.didatico-card.disciplina-ed-fisica { border-left-color: #22c55e; }
+.didatico-card.disciplina-ed-fisica .card-header i { color: #22c55e; background: #dcfce7; }
+.didatico-card.disciplina-ed-fisica .quantidade-badge { background: #dcfce7; color: #22c55e; }
+.didatico-card.disciplina-ed-fisica .info-item i { color: #22c55e; }
+
+.didatico-card.disciplina-historia { border-left-color: #f97316; }
+.didatico-card.disciplina-historia .card-header i { color: #f97316; background: #ffedd5; }
+.didatico-card.disciplina-historia .quantidade-badge { background: #ffedd5; color: #f97316; }
+.didatico-card.disciplina-historia .info-item i { color: #f97316; }
+
+.didatico-card.disciplina-ingles { border-left-color: #ec4899; }
+.didatico-card.disciplina-ingles .card-header i { color: #ec4899; background: #fce7f3; }
+.didatico-card.disciplina-ingles .quantidade-badge { background: #fce7f3; color: #ec4899; }
+.didatico-card.disciplina-ingles .info-item i { color: #ec4899; }
+
+.didatico-card.disciplina-quimica { border-left-color: #14b8a6; }
+.didatico-card.disciplina-quimica .card-header i { color: #14b8a6; background: #ccfbf1; }
+.didatico-card.disciplina-quimica .quantidade-badge { background: #ccfbf1; color: #14b8a6; }
+.didatico-card.disciplina-quimica .info-item i { color: #14b8a6; }
+
+.didatico-card.disciplina-biologia { border-left-color: #84cc16; }
+.didatico-card.disciplina-biologia .card-header i { color: #84cc16; background: #ecfccb; }
+.didatico-card.disciplina-biologia .quantidade-badge { background: #ecfccb; color: #84cc16; }
+.didatico-card.disciplina-biologia .info-item i { color: #84cc16; }
+
+.didatico-card.disciplina-geografia { border-left-color: #06b6d4; }
+.didatico-card.disciplina-geografia .card-header i { color: #06b6d4; background: #cffafe; }
+.didatico-card.disciplina-geografia .quantidade-badge { background: #cffafe; color: #06b6d4; }
+.didatico-card.disciplina-geografia .info-item i { color: #06b6d4; }
+
+.didatico-card.disciplina-espanhol { border-left-color: #f43f5e; }
+.didatico-card.disciplina-espanhol .card-header i { color: #f43f5e; background: #ffe4e6; }
+.didatico-card.disciplina-espanhol .quantidade-badge { background: #ffe4e6; color: #f43f5e; }
+.didatico-card.disciplina-espanhol .info-item i { color: #f43f5e; }
+
+.didatico-card.disciplina-arte { border-left-color: #a855f7; }
+.didatico-card.disciplina-arte .card-header i { color: #a855f7; background: #f3e8ff; }
+.didatico-card.disciplina-arte .quantidade-badge { background: #f3e8ff; color: #a855f7; }
+.didatico-card.disciplina-arte .info-item i { color: #a855f7; }
+
+
+.categoria-btn[data-filtro] {
+    text-transform: capitalize;
+}
+
+.categoria-btn[data-filtro].active {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.categoria-btn[data-filtro].active i {
+    color: white;
+}
+.modal-didatico .modal-footer,
+.didatico-modal .modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.modal-didatico .modal-footer button,
+.didatico-modal .modal-footer button {
+    border: 2px solid #051c4236;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    background: white;
+}
+
+.modal-didatico .modal-footer button:hover,
+.didatico-modal .modal-footer button:hover {
+    background: #f1f5f9;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .didatico-card {
+        padding: 12px;
+    }
+    
+    .didatico-card .card-footer {
+        gap: 4px;
+    }
+    
+    .didatico-card .card-footer button {
+        min-width: 40px;
+        padding: 8px 0;
+    }
+    
+    .didatico-card .card-footer button span {
+        display: none;
+    }
+    
+    .didatico-card .card-footer button i {
+        font-size: 0.9rem;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .didatico-card .card-footer button {
+        font-size: 0.6rem;
+        padding: 6px 2px;
+    }
+}

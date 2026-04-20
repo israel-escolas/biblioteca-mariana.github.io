@@ -62,8 +62,6 @@
             </nav>
         </div>
     </header>
-
-        <!-- Botões de Seleção de Turma -->
         <div class="turmas-section">
             <div class="turmas-title">
                 <i class="fas fa-users"></i>
@@ -90,8 +88,6 @@
                 </button>
             </div>
         </div>
-
-        <!-- Seção de seleção de aluno (inicialmente escondida) -->
         <div id="alunosSection" class="selection-section" style="display: none;">
             <div class="search-box">
                 <i class="fas fa-search"></i>
@@ -105,8 +101,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Card do aluno selecionado -->
         <div id="studentCard" class="student-card-container" style="display: none;">
             <div class="student-card-header">
                 <button id="closeCard" class="close-btn">
@@ -120,13 +114,12 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal para ampliar imagem -->
+    <!-- ===== MODAL PARA AMPLIAR IMAGEM ===== -->
     <div id="imageModal" class="image-modal" onclick="fecharModalImagem()">
         <span class="image-modal-close" onclick="fecharModalImagem()">&times;</span>
         <img id="modalImage" src="" alt="Foto ampliada">
     </div>
-
+    <script src="assets/js/config.js"></script>
     <script src="assets/js/ficha_aluno.js"></script>
 </body>
 </html>

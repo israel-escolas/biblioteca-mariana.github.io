@@ -196,3 +196,67 @@ function jsonResponse(obj) {
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+
+
+---------------------------------
+
+// Função que responde a requisições POST (envio de dados/arquivos)
+function doPost(e) {
+  try { // Início do bloco de tratamento de exceções (captura erros)
+    
+    // ID da pasta do Google Drive onde os arquivos serão salvos
+    // Copie da URL do Drive: https://drive.google.com/drive/folders/1AQv6okGDhUHEuFH5yo7s66BFRYXE3TNv
+    var folderId = '1AQv6okGDhUHEuFH5yo7s66BFRYXE3TNv'; 
+    
+    // Obtém a pasta do Google Drive usando o ID fornecido
+    var folder = DriveApp.getFolderById(folderId);
+    
+    // Obtém o arquivo enviado do parâmetro 'file' no formulário/form-data
+    var blob = e.parameter.file;
+    
+    // Decodifica os dados Base64 recebidos no parâmetro 'data'
+    // Converte string Base64 de volta para bytes binários
+    var data = Utilities.base64Decode(e.parameter.data);
+    
+    // Obtém o tipo MIME do arquivo (ex: 'image/jpeg', 'application/pdf')
+    // Se não foi enviado, usa 'image/jpeg' como padrão
+    var mime = e.parameter.mime || 'image/jpeg';
+    
+    // Obtém o nome do arquivo enviado no parâmetro 'name'
+    // Se não foi enviado, cria um nome automático com timestamp atual
+    var name = e.parameter.name || 'arquivo_' + new Date().getTime();
+    
+    // Cria um objeto Blob (dados binários) com os dados decodificados,
+    // o tipo MIME e o nome do arquivo
+    var fileBlob = Utilities.newBlob(data, mime, name);
+    
+    // Cria o arquivo dentro da pasta especificada usando o Blob
+    var file = folder.createFile(fileBlob);
+    
+    // Retorna uma resposta de sucesso em formato JSON
+    return ContentService
+      .createTextOutput(JSON.stringify({  // Cria resposta HTTP com JSON
+        status: 'ok',                     // Status de sucesso
+        url: file.getUrl(),              // URL pública do arquivo no Drive
+        id: file.getId()                 // ID único do arquivo no Drive
+      }))
+      .setMimeType(ContentService.MimeType.JSON); // Define o tipo de conteúdo como JSON
+      
+  } catch (error) { // Captura qualquer erro que acontecer no bloco try
+    // Retorna uma resposta de erro em formato JSON
+    return ContentService
+      .createTextOutput(JSON.stringify({ 
+        status: 'error',                // Status indicando erro
+        message: error.toString()       // Mensagem de erro detalhada
+      }))
+      .setMimeType(ContentService.MimeType.JSON); // Define o tipo de conteúdo como JSON
+  }
+}
+
+// Função que responde a requisições GET (para testar/CORS)
+// É obrigatória para permitir chamadas de outros domínios (GitHub Pages)
+function doGet(e) {
+  // Retorna uma mensagem simples indicando que o webhook está ativo
+  return ContentService.createTextOutput("Webhook ativo.");
+}

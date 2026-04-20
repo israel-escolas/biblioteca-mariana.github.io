@@ -1,6 +1,4 @@
 
-
-/* ==================== BOTÕES DE TURMA ==================== */
 .turmas-section {
     background: white;
     border-radius: 20px;
@@ -61,8 +59,6 @@
     border-color: #667eea;
     color: white;
 }
-
-/* ==================== SELEÇÃO DE ALUNOS ==================== */
 .selection-section {
     background: white;
     border-radius: 20px;
@@ -144,8 +140,6 @@
     color: #333;
     flex: 1;
 }
-
-/* ==================== CARD DO ALUNO ==================== */
 .student-card-container {
     background: white;
     border-radius: 20px;
@@ -207,7 +201,6 @@
     transform: rotate(90deg);
 }
 
-/* ==================== DADOS DO ALUNO ==================== */
 .student-data {
     padding: 25px;
     max-height: 70vh;
@@ -332,8 +325,6 @@
     margin-right: 5px;
     font-size: 11px;
 }
-
-/* ==================== FOTO DO ALUNO ==================== */
 .foto-aluno {
     width: 150px;
     height: 150px;
@@ -349,8 +340,6 @@
     transform: scale(1.05);
     border-color: #764ba2;
 }
-
-/* ==================== MODAL PARA AMPLIAR IMAGEM ==================== */
 .image-modal {
     display: none;
     position: fixed;
@@ -392,8 +381,6 @@
     color: #667eea;
     transform: scale(1.1);
 }
-
-/* ==================== LOADING ==================== */
 .loading-students, .loading-data {
     text-align: center;
     padding: 40px;
@@ -414,8 +401,6 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
-/* ==================== EMPTY STATE ==================== */
 .empty-state {
     text-align: center;
     padding: 40px;
@@ -427,8 +412,6 @@
     margin-bottom: 15px;
     opacity: 0.5;
 }
-
-/* ==================== SCROLLBAR ==================== */
 .students-list::-webkit-scrollbar,
 .student-data::-webkit-scrollbar {
     width: 8px;
@@ -445,8 +428,6 @@
     background: #667eea;
     border-radius: 10px;
 }
-
-/* ==================== RESPONSIVO ==================== */
 @media (max-width: 768px) {
     .fields-grid {
         grid-template-columns: 1fr;

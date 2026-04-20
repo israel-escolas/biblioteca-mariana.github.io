@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Registro de Atestados</title>
+    <title>Registro de Atestados - Biblioteca</title>
     <link rel="icon" type="image/png" href="assets/img/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/atestados.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
 </head>
 <body>
     <header>
@@ -19,213 +17,249 @@
                 <div class="logo-icon">
                     <i class="fas fa-book-open"></i>
                 </div>
-                <h1>Escola Estadual<span>  Mariana Cavalcanti</span></h1>
+                <h1>Escola Estadual<span> Mariana Cavalcanti</span></h1>
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li class="nav-link">
-                        <a href="index.html">
-                            <i class="fa-brands fa-bimobject"></i>
-                            <span>Biblioteca</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="arcevo.html">
-                            <i class="fas fa-book"></i>
-                            <span>Livros</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="emprestimo.html">
-                            <i class="fas fa-book-reader"></i>
-                            <span>Empréstimos</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="controlDidatico.html">
-                            <i class="fa-solid fa-gear"></i>
-                            <span>Controle Didático</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="RegisterAtestado.html">
-                            <i class="fa-solid fa-clipboard-check"></i>
-                            <span>Registro de Atestados</span>
-                        </a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="ficha_aluno.html">
-                            <i class="fa-solid fa-user-graduate"></i>
-                            <span>FICHA DO ALUNO</span>
-                        </a>
-                    </li>
+                    <li class="nav-link"><a href="index.html"><i class="fa-brands fa-bimobject"></i><span>Biblioteca</span></a></li>
+                    <li class="nav-link"><a href="arcevo.html"><i class="fas fa-book"></i><span>Livros</span></a></li>
+                    <li class="nav-link"><a href="emprestimo.html"><i class="fas fa-book-reader"></i><span>Empréstimos</span></a></li>
+                    <li class="nav-link"><a href="controlDidatico.html"><i class="fa-solid fa-gear"></i><span>Controle Didático</span></a></li>
+                    <li class="nav-link"><a href="RegisterAtestado.html"><i class="fa-solid fa-clipboard-check"></i><span>Registro de Atestados</span></a></li>
+                    <li class="nav-link"><a href="ficha_aluno.html"><i class="fa-solid fa-user-graduate"></i><span>FICHA DO ALUNO</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
-    
     <main class="main-content">
-        <section class="page-header">
-            <h2><i class="fa-solid fa-clipboard-check"></i> Registro de Atestados Médicos</h2>
-            <p>Gerencie os atestados de alunos e funcionários da escola.</p>
-        </section>
-        
-        <section class="atestados-section">
-            <div class="panel-header">
-                <h2><i class="fa-solid fa-notes-medical"></i> Atestados Registrados</h2>
-                <button class="btn-primary" id="btnNovoAtestado">
-                    <i class="fas fa-plus"></i> Novo Atestado
-                </button>
-            </div>
-            
-            <div class="filtros-container">
-                <div class="filtro-group">
-                    <label><i class="fas fa-filter"></i> Filtrar por:</label>
-                    <select id="filtroTipo" class="filtro-select">
-                        <option value="todos">Todos</option>
-                        <option value="aluno">Alunos</option>
-                        <option value="funcionario">Funcionários</option>
-                    </select>
+        <div class="page-header">
+            <h2><i class="fas fa-clipboard-check"></i> Registro de Atestados</h2>
+            <p>Registre e gerencie justificativas de faltas dos alunos</p>
+        </div>
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="registrar">
+                <i class="fas fa-plus-circle"></i> Registrar
+            </button>
+            <button class="tab-btn" data-tab="consultar">
+                <i class="fas fa-search"></i> Consultar
+            </button>
+        </div>
+        <div id="tab-registrar" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-file-medical"></i> Nova Justificativa</h3>
                 </div>
-                <div class="filtro-group">
-                    <label><i class="fas fa-search"></i> Buscar:</label>
-                    <input type="text" id="buscaAtestado" placeholder="Nome do aluno/funcionário..." class="filtro-input">
+                <div class="card-body">
+                    <form id="formAtestado">
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label for="turma"><i class="fas fa-users"></i> Turma/Grupo *</label>
+                                <select id="turma" name="turma" required>
+                                    <option value="">Carregando turmas...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="aluno"><i class="fas fa-user-graduate"></i> Aluno/Funcionário *</label>
+                                <select id="aluno" name="aluno" required disabled>
+                                    <option value="">Selecione uma turma primeiro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="status"><i class="fas fa-tag"></i> Status</label>
+                                <select id="status" name="status">
+                                    <option value="Aprovado">Aprovado</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Rejeitado">Rejeitado</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="dataInicio"><i class="fas fa-calendar-alt"></i> Data Início *</label>
+                                <input type="date" id="dataInicio" name="dataInicio" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dataFim"><i class="fas fa-calendar-check"></i> Data Fim *</label>
+                                <input type="date" id="dataFim" name="dataFim" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="motivo"><i class="fas fa-pencil-alt"></i> Motivo *</label>
+                            <textarea id="motivo" name="motivo" rows="3" placeholder="Descreva o motivo da falta..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="observacoes"><i class="fas fa-sticky-note"></i> Observações</label>
+                            <textarea id="observacoes" name="observacoes" rows="2" placeholder="Informações adicionais (opcional)"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="arquivo"><i class="fas fa-paperclip"></i> Anexar Arquivo</label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="arquivo" name="arquivo" accept=".pdf,.jpg,.jpeg,.png">
+                                <div class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Clique ou arraste um arquivo</span>
+                                </div>
+                            </div>
+                            <div id="fileInfo" class="file-info" style="display: none;"></div>
+                            <small><i class="fas fa-info-circle"></i> Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="btnLimpar">
+                                <i class="fas fa-undo-alt"></i> Limpar
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Registrar Justificativa
+                            </button>
+                        </div>
+                    </form>
+                    <div id="mensagemRegistro" class="mensagem"></div>
                 </div>
             </div>
-            
-            <div class="cards-atestados" id="cardsAtestados">
-                <!-- Os cards serão inseridos dinamicamente aqui -->
+        </div>
+        <div id="tab-consultar" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-list"></i> Registros</h3>
+                </div>
+                <div class="card-body">
+                    <div class="filtros-consultar">
+                        <div class="filtro-grupo">
+                            <label for="filtroTurma"><i class="fas fa-users"></i> Turma/Grupo</label>
+                            <select id="filtroTurma">
+                                <option value="Todas">Todas</option>
+                            </select>
+                        </div>
+                        <div class="filtro-grupo">
+                            <label for="filtroData"><i class="fas fa-calendar"></i> Data</label>
+                            <input type="date" id="filtroData">
+                        </div>
+                        <div class="filtro-grupo">
+                            <label for="filtroStatus"><i class="fas fa-tag"></i> Status</label>
+                            <select id="filtroStatus">
+                                <option value="Todos">Todos</option>
+                                <option value="Aprovado">Aprovado</option>
+                                <option value="Pendente">Pendente</option>
+                                <option value="Rejeitado">Rejeitado</option>
+                            </select>
+                        </div>
+                        <div class="filtro-acoes">
+                            <button class="btn-secondary" id="btnAtualizar">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="tabelaRegistros">
+                            <thead>
+                                <tr>
+                                    <th>👤 Nome</th>
+                                    <th>📚 Turma/Grupo</th>
+                                    <th>📅 Data Início</th>
+                                    <th>📅 Data Fim</th>
+                                    <th>💬 Motivo</th>
+                                    <th>📎 Arquivo</th>
+                                    <th>🏷️ Status</th>
+                                    <th>⚙️ Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyRegistros">
+                                <tr><td colspan="8" style="text-align: center;">Carregando registros...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
+        <div id="modalEditar" class="modal-overlay">
+            <div class="modal-container modal-large">
+                <div class="modal-header">
+                    <h3><i class="fas fa-edit"></i> Editar Justificativa</h3>
+                    <button class="modal-close" onclick="closeModalEditar()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditar">
+                        <input type="hidden" id="editLinha">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="editNome">Nome</label>
+                                <input type="text" id="editNome" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTurma">Turma</label>
+                                <input type="text" id="editTurma" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editMotivo">Motivo</label>
+                            <textarea id="editMotivo" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editObs">Observações</label>
+                            <textarea id="editObs" rows="2"></textarea>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="editDataInicio">Data Início</label>
+                                <input type="date" id="editDataInicio">
+                            </div>
+                            <div class="form-group">
+                                <label for="editDataFim">Data Fim</label>
+                                <input type="date" id="editDataFim">
+                            </div>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="editStatus">Status</label>
+                                <select id="editStatus">
+                                    <option value="Aprovado">Aprovado</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Rejeitado">Rejeitado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editLink">Link do Arquivo</label>
+                                <input type="text" id="editLink" readonly>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-cancel" onclick="closeModalEditar()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button class="btn-primary" id="btnSalvarEdicao">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
-    
-    <!-- Modal de Cadastro de Atestado -->
-    <div id="modalAtestado" class="modal-overlay">
-        <div class="modal-container">
+        <!-- ===== MODAL: CONFIRMAR EXCLUSÃO ===== -->
+    <div id="modalExcluir" class="modal-overlay">
+        <div class="modal-container" style="max-width: 400px;">
             <div class="modal-header">
-                <h3>
-                    <i class="fa-solid fa-clipboard-check"></i> 
-                    Novo Atestado Médico
-                </h3>
-                <button class="modal-close" id="btnCloseModal">
+                <h3><i class="fas fa-trash-alt" style="color: #ef4444;"></i> Confirmar Exclusão</h3>
+                <button class="modal-close" onclick="closeModalExcluir()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
             <div class="modal-body">
-                <form id="formAtestado">
-                    <div class="form-grid">
-                        <div class="form-group full-width">
-                            <label for="nome">
-                                <i class="fas fa-user"></i> Nome Completo
-                            </label>
-                            <input type="text" id="nome" name="nome" 
-                                placeholder="Digite o nome completo" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="tipo">
-                                <i class="fas fa-id-card"></i> Tipo
-                            </label>
-                            <select id="tipo" name="tipo" required>
-                                <option value="">Selecione</option>
-                                <option value="aluno">Aluno</option>
-                                <option value="funcionario">Funcionário</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group" id="grupoTurma" style="display: none;">
-                            <label for="turma">
-                                <i class="fas fa-users"></i> Turma
-                            </label>
-                            <select id="turma" name="turma">
-                                <option value="">Selecione a turma</option>
-                                <option value="1º MATUTINO">1º MATUTINO</option>
-                                <option value="2º MATUTINO">2º MATUTINO</option>
-                                <option value="3º MATUTINO">3º MATUTINO</option>
-                                <option value="1º VESPERTINO">1º VESPERTINO</option>
-                                <option value="2º VESPERTINO">2º VESPERTINO</option>
-                                <option value="3º VESPERTINO">3º VESPERTINO</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group" id="grupoFuncao" style="display: none;">
-                            <label for="funcao">
-                                <i class="fas fa-briefcase"></i> Cargo/Função
-                            </label>
-                            <input type="text" id="funcao" name="funcao" 
-                                placeholder="Ex: Professor, Coordenador, Secretária...">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="dataInicio">
-                                <i class="fas fa-calendar-alt"></i> Data Início
-                            </label>
-                            <input type="date" id="dataInicio" name="dataInicio" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="dataFim">
-                                <i class="fas fa-calendar-check"></i> Data Fim
-                            </label>
-                            <input type="date" id="dataFim" name="dataFim" required>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="motivo">
-                                <i class="fas fa-stethoscope"></i> Motivo
-                            </label>
-                            <input type="text" id="motivo" name="motivo" 
-                                placeholder="Ex: Consulta médica, Cirurgia, Doença..." required>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="observacoes">
-                                <i class="fas fa-comment-dots"></i> Observações (opcional)
-                            </label>
-                            <textarea id="observacoes" name="observacoes" 
-                                    rows="3" placeholder="Observações adicionais..."></textarea>
-                        </div>
-                        
-                        <div class="form-group full-width">
-                            <label for="anexo">
-                                <i class="fas fa-paperclip"></i> Anexo (opcional)
-                            </label>
-                            <input type="file" id="anexo" name="anexo" accept=".pdf,.jpg,.jpeg,.png">
-                            <small style="color: #666; font-size: 0.75rem;">Formatos: PDF, JPG, PNG (max. 5MB)</small>
-                        </div>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn-cancel" id="btnCancelModal">
-                            <i class="fas fa-times"></i> Cancelar
-                        </button>
-                        <button type="submit" class="btn-submit">
-                            <i class="fas fa-save"></i> Salvar Atestado
-                        </button>
-                    </div>
-                </form>
+                <p style="text-align: center; font-size: 1.1rem;">Tem certeza que deseja excluir esta justificativa?</p>
+                <p style="text-align: center; color: #64748b;" id="excluirNome"></p>
             </div>
-        </div>
-    </div>
-    
-    <!-- Modal de Visualização de Anexo -->
-    <div id="modalAnexo" class="modal-overlay">
-        <div class="modal-container modal-anexo">
-            <div class="modal-header">
-                <h3>
-                    <i class="fas fa-paperclip"></i> 
-                    Visualizar Anexo
-                </h3>
-                <button class="modal-close" id="btnCloseAnexoModal">
-                    <i class="fas fa-times"></i>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModalExcluir()">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button class="btn-danger" id="btnConfirmarExclusao">
+                    <i class="fas fa-trash-alt"></i> Excluir
                 </button>
             </div>
-            <div class="modal-body" id="anexoContent">
-            </div>
         </div>
     </div>
-    
+    <script src="assets/js/config.js"></script>
     <script src="assets/js/atestados.js"></script>
 </body>
 </html>

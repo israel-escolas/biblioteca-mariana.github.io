@@ -1,7 +1,3 @@
-// Configuração
-const API_URL = 'https://script.google.com/macros/s/AKfycbzzeQ5FN6nKHpggycIod9IxiDOHdZkBVdYn0BRIg608eNWt6QhEFCLyFlig3lhKUq4/exec';
-
-// Mapeamento das turmas para os IDs das planilhas
 const TURMAS = {
     '1M': {
         nome: '1ª Série Matutino',
@@ -34,9 +30,6 @@ let currentSpreadsheetId = null;
 let studentsList = [];
 let currentStudent = null;
 
-// ============================================
-// FUNÇÃO PARA CONVERTER LINKS DO DRIVE
-// ============================================
 function converterLinksDrive(urlString) {
     if (!urlString || urlString.trim() === '') return [];
     
@@ -67,9 +60,6 @@ function converterLinksDrive(urlString) {
     return urlsConvertidas.length > 0 ? urlsConvertidas : [];
 }
 
-// ============================================
-// FUNÇÕES PARA AMPLIAR IMAGEM
-// ============================================
 function ampliarImagem(url) {
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImage');
@@ -96,9 +86,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ============================================
-// INICIALIZAÇÃO
-// ============================================
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     setupTurmaButtons();
@@ -148,7 +135,7 @@ function loadStudentsList() {
     studentsListDiv.innerHTML = '<div class="loading-students"><div class="spinner-small"></div><p>Carregando lista de alunos...</p></div>';
     
     try {
-        const url = `${API_URL}?action=list&spreadsheetId=${currentSpreadsheetId}&callback=handleStudentsList`;
+        const url = `${API_URL_ALUNO}?action=list&spreadsheetId=${currentSpreadsheetId}&callback=handleStudentsList`;
         console.log('Tentando acessar:', url);
         
         const oldScript = document.getElementById('jsonp-script');
@@ -251,7 +238,7 @@ function loadStudentData(studentName) {
         const oldScript = document.getElementById('jsonp-student');
         if (oldScript) oldScript.remove();
         
-        const url = `${API_URL}?action=get&spreadsheetId=${currentSpreadsheetId}&student=${encodeURIComponent(studentName)}&callback=handleStudentData`;
+        const url = `${API_URL_ALUNO}?action=get&spreadsheetId=${currentSpreadsheetId}&student=${encodeURIComponent(studentName)}&callback=handleStudentData`;
         console.log('Carregando dados do aluno:', url);
         
         const script = document.createElement('script');
@@ -284,7 +271,6 @@ function renderStudentData(data) {
     const studentDataDiv = document.getElementById('studentData');
     let html = '';
     
-    // Função auxiliar para criar campo com botão copiar
     function renderFieldWithCopy(label, value) {
         if (!value || value === '') return '';
         const valueId = `copy-${Date.now()}-${Math.random()}`;
@@ -301,7 +287,6 @@ function renderStudentData(data) {
         `;
     }
     
-    // ==================== FOTO DO ALUNO ====================
     if (data.foto && data.foto !== "") {
         const fotos = converterLinksDrive(data.foto);
         const fotoUrl = fotos.length > 0 ? fotos[0] : "";
@@ -315,7 +300,6 @@ function renderStudentData(data) {
         }
     }
     
-    // ==================== DADOS PESSOAIS ====================
     const dadosPessoais = {
         'Nome Civil': data.nomeCivil,
         'Nome Social': data.nomeSocial,
@@ -349,7 +333,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-user"></i><span>DADOS PESSOAIS</span></div><div class="fields-grid">${dadosPessoaisHtml}</div></div>`;
     }
     
-    // ==================== FILIAÇÃO ====================
     let filiacaoHtml = '';
     if (data.pai) filiacaoHtml += renderFieldWithCopy('Pai', data.pai);
     if (data.telefonePai) filiacaoHtml += renderFieldWithCopy('Tel. Pai', data.telefonePai);
@@ -366,8 +349,7 @@ function renderStudentData(data) {
     if (filiacaoHtml) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-users"></i><span>FILIAÇÃO</span></div><div class="fields-grid">${filiacaoHtml}</div></div>`;
     }
-    
-    // ==================== CERTIDÃO CÍVIL ====================
+
     let certidaoHtml = '';
     if (data.modeloCertidao) certidaoHtml += renderFieldWithCopy('Modelo Novo', data.modeloCertidao);
     if (data.tipoCertidao) certidaoHtml += renderFieldWithCopy('Tipo', data.tipoCertidao);
@@ -383,7 +365,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-file-alt"></i><span>CERTIDÃO CÍVIL</span></div><div class="fields-grid">${certidaoHtml}</div></div>`;
     }
     
-    // ==================== DOCUMENTAÇÃO COMPLEMENTAR ====================
     let documentacaoHtml = '';
     if (data.rg) documentacaoHtml += renderFieldWithCopy('RG', data.rg);
     if (data.orgaoExpedicao) documentacaoHtml += renderFieldWithCopy('Órgão Expedidor', data.orgaoExpedicao);
@@ -401,7 +382,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-id-card"></i><span>DOCUMENTAÇÃO COMPLEMENTAR</span></div><div class="fields-grid">${documentacaoHtml}</div></div>`;
     }
     
-    // ==================== NATURALIDADE ====================
     let naturalidadeHtml = '';
     if (data.pais) naturalidadeHtml += renderFieldWithCopy('País', data.pais);
     if (data.nacionalidade) naturalidadeHtml += renderFieldWithCopy('Nacionalidade', data.nacionalidade);
@@ -412,7 +392,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-globe"></i><span>NATURALIDADE</span></div><div class="fields-grid">${naturalidadeHtml}</div></div>`;
     }
     
-    // ==================== INFORMAÇÕES PARA CONTATO ====================
     let contatoHtml = '';
     if (data.cep) contatoHtml += renderFieldWithCopy('CEP', data.cep);
     if (data.logradouro) contatoHtml += renderFieldWithCopy('Logradouro', data.logradouro);
@@ -431,7 +410,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-address-book"></i><span>INFORMAÇÕES PARA CONTATO</span></div><div class="fields-grid">${contatoHtml}</div></div>`;
     }
     
-    // ==================== INFORMAÇÕES CADÚNICO ====================
     let cadunicoHtml = '';
     if (data.nisCadUnico) cadunicoHtml += renderFieldWithCopy('NIS', data.nisCadUnico);
     if (data.nomeCadUnico) cadunicoHtml += renderFieldWithCopy('Nome', data.nomeCadUnico);
@@ -446,7 +424,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-hand-holding-heart"></i><span>INFORMAÇÕES CADÚNICO</span></div><div class="fields-grid">${cadunicoHtml}</div></div>`;
     }
     
-    // ==================== OUTRAS INFORMAÇÕES ====================
     let outrasInfoHtml = '';
     if (data.idInep) outrasInfoHtml += renderFieldWithCopy('ID INEP Estudante', data.idInep);
     if (data.cartaoSus) outrasInfoHtml += renderFieldWithCopy('Nº do Cartão SUS', data.cartaoSus);
@@ -457,7 +434,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-info-circle"></i><span>OUTRAS INFORMAÇÕES</span></div><div class="fields-grid">${outrasInfoHtml}</div></div>`;
     }
     
-    // ==================== DOCUMENTOS ENTREGUES ====================
     if (data.documentos && data.documentos.length > 0) {
         let documentosHtml = '';
         data.documentos.forEach(doc => {
@@ -486,7 +462,6 @@ function renderStudentData(data) {
         }
     }
     
-    // ==================== QUESTIONÁRIO SÓCIO ECONÔMICO ====================
     const socioeconomico = {
         'Religião': data.religiao,
         'Tipo de Residência': data.tipoResidencia,
@@ -528,7 +503,6 @@ function renderStudentData(data) {
         html += `<div class="section"><div class="section-title"><i class="fas fa-chart-pie"></i><span>QUESTIONÁRIO SÓCIO ECONÔMICO</span></div><div class="fields-grid">${socioeconomicoHtml}</div></div>`;
     }
     
-    // ==================== REGISTRO DE OCORRÊNCIAS ====================
     if (data.ocorrencias && data.ocorrencias.length > 0) {
         let ocorrenciasHtml = '';
         data.ocorrencias.forEach((oc, index) => {
@@ -566,9 +540,6 @@ function renderStudentData(data) {
     studentDataDiv.innerHTML = html;
 }
 
-// ============================================
-// FUNÇÕES PARA COPIAR TEXTO
-// ============================================
 window.copyToClipboard = function(elementId, button) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -605,9 +576,6 @@ window.copyToClipboardText = function(text, button) {
     });
 }
 
-// ============================================
-// FUNÇÃO PARA ESCAPAR HTML
-// ============================================
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
