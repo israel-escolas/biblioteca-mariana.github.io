@@ -30,19 +30,6 @@ let termoBusca = '';
 const cacheLivros = {};
 const cacheEstudantes = {};
 
-const COLUNAS = {
-    ID: 'codigo',
-    LIVRO: 'LIVRO',
-    ESTUDANTE: 'ESTUDANTE',
-    TURMA: 'TURMA',
-    DATA_EMPRESTIMO: 'DATA EMPRESTIMO',
-    DATA_DEVOLUCAO: 'DATA DEVOLUCAO',
-    OUTRO: 'OUTRO',
-    SITUACAO: 'SITUAÇÃO',
-    OBSERVACOES: 'OBSERVACOES',
-    REGISTRO: 'REGISTRO'
-};
-
 const emprestimosContainer = document.querySelector('.emprestimos-container');
 const searchInput = document.querySelector('.search-box input');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -114,17 +101,28 @@ async function carregarEmprestimos() {
 }
 
 function normalizarEmprestimo(item) {
+    // Determinar o status corretamente baseado nas colunas da planilha
+    let status = 'ATIVO';
+    
+    // Verificar STATUS (coluna H) e DATA DEVOLUCAO REAL (coluna G)
+    const statusPlanilha = item.STATUS || item.status || '';
+    const dataDevolucaoReal = item['DATA DEVOLUCAO REAL'] || item.dataDevolucaoReal || '';
+    
+    if (statusPlanilha === 'DEVOLVIDO' || dataDevolucaoReal) {
+        status = 'DEVOLVIDO';
+    }
+    
     return {
-        id: item.codigo || item.ID || item.id,
-        livro: item.LIVRO || item.livro,
-        estudante: item.ESTUDANTE || item.estudante,
-        turma: item.TURMA || item.turma,
-        dataEmprestimo: item['DATA EMPRESTIMO'] || item.dataEmprestimo,
-        dataDevolucao: item['DATA DEVOLUCAO'] || item.dataDevolucao,
-        dataDevolucaoReal: item['DATA DEVOLUCAO REAL'] || item.dataDevolucaoReal || '',
-        status: item.SITUAÇÃO || item.STATUS || item.status || 'ATIVO',
+        id: item.ID || item.id || item.codigo,
+        livro: item.LIVRO || item.livro || '',
+        estudante: item.ESTUDANTE || item.estudante || '',
+        turma: item.TURMA || item.turma || '',
+        dataEmprestimo: item['DATA EMPRESTIMO'] || item.dataEmprestimo || '',
+        dataDevolucao: item['DATA DEVOLUCAO'] || item.dataDevolucao || '',
+        dataDevolucaoReal: dataDevolucaoReal,
+        status: status,
         observacoes: item.OBSERVACOES || item.observacoes || '',
-        registro: item.REGISTRO || item.registro || '',
+        registro: item['DATA REGISTRO'] || item.registro || '',
         outro: item.OUTRO || item.outro || ''
     };
 }
@@ -265,6 +263,9 @@ function criarCardEmprestimo(emprestimo) {
     const card = document.createElement('div');
     card.className = 'emprestimo-card';
     
+    const livroTitulo = String(emprestimo.livro || 'N/A');
+    const livroEscapado = livroTitulo.replace(/'/g, "\\'");
+    
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
     
@@ -308,6 +309,18 @@ function criarCardEmprestimo(emprestimo) {
     const dataEmprestimo = formatarData(emprestimo.dataEmprestimo);
     const dataDevolucaoPrevista = formatarData(emprestimo.dataDevolucao);
     
+    let dataExibicao = dataDevolucaoPrevista;
+    if (status === 'DEVOLVIDO') {
+        if (emprestimo.dataDevolucaoReal) {
+            dataExibicao = formatarData(emprestimo.dataDevolucaoReal);
+        } else if (emprestimo.registro) {
+            const dataExtraida = extrairDataDoRegistro(emprestimo.registro);
+            if (dataExtraida) {
+                dataExibicao = formatarData(dataExtraida);
+            }
+        }
+    }
+    
     card.innerHTML = `
         <div class="card-header">
             <div class="status-badge ${statusClass}">
@@ -323,7 +336,7 @@ function criarCardEmprestimo(emprestimo) {
                     <i class="fas fa-book"></i>
                     <div>
                         <label>Livro</label>
-                        <p>${emprestimo.livro || 'N/A'}</p>
+                        <p>${livroTitulo}</p>
                     </div>
                 </div>
                 <div class="info-item">
@@ -338,7 +351,7 @@ function criarCardEmprestimo(emprestimo) {
                     <i class="fas fa-calendar-check"></i>
                     <div>
                         <label>${status === 'DEVOLVIDO' ? 'Devolvido em' : 'Devolução Prevista'}</label>
-                        <p>${status === 'DEVOLVIDO' ? formatarData(emprestimo.dataDevolucaoReal) : dataDevolucaoPrevista}</p>
+                        <p>${dataExibicao}</p>
                         ${status === 'ATRASADO' ? `<span class="days-late">Atrasado ${diasAtraso} dia(s)</span>` : ''}
                     </div>
                 </div>
@@ -354,7 +367,7 @@ function criarCardEmprestimo(emprestimo) {
                 <i class="fas fa-eye"></i> Detalhes
             </button>
             ${status !== 'DEVOLVIDO' ? `
-                <button class="btn-action btn-return" onclick="confirmarDevolucao('${emprestimo.id}', '${emprestimo.livro.replace(/'/g, "\\'")}')">
+                <button class="btn-action btn-return" onclick="confirmarDevolucao('${emprestimo.id}', '${livroEscapado}')">
                     <i class="fas fa-undo-alt"></i> Devolução
                 </button>
             ` : ''}
@@ -364,14 +377,75 @@ function criarCardEmprestimo(emprestimo) {
     return card;
 }
 
+function extrairDataDoRegistro(registro) {
+    if (!registro) return null;
+    
+    try {
+        if (registro.includes('T')) {
+            const data = new Date(registro);
+            if (!isNaN(data.getTime())) {
+                const dataLocal = new Date(data.getTime() + data.getTimezoneOffset() * 60000);
+                return dataLocal.toISOString().split('T')[0];
+            }
+        }
+        
+        if (registro.includes('/')) {
+            const partes = registro.split(',')[0].trim();
+            const dataPartes = partes.split('/');
+            if (dataPartes.length === 3) {
+                return `${dataPartes[2]}-${dataPartes[1]}-${dataPartes[0]}`;
+            }
+        }
+        
+        return null;
+    } catch {
+        return null;
+    }
+}
+
+function formatarRegistro(registro) {
+    if (!registro) return 'Não informado';
+    
+    try {
+        if (registro.includes('T')) {
+            const data = new Date(registro);
+            if (!isNaN(data.getTime())) {
+                const dataLocal = new Date(data.getTime() + data.getTimezoneOffset() * 60000);
+                return dataLocal.toLocaleString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+            }
+        }
+        
+        if (registro.includes('/') && registro.includes(':')) {
+            return registro;
+        }
+        
+        return registro;
+    } catch {
+        return registro;
+    }
+}
+
 function formatarData(dataString) {
     if (!dataString) return 'N/A';
     
     try {
+        if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataString)) {
+            return dataString;
+        }
+        
         const data = new Date(dataString);
         if (isNaN(data.getTime())) return dataString;
         
-        return data.toLocaleDateString('pt-BR', {
+        const dataLocal = new Date(data.getTime() + data.getTimezoneOffset() * 60000);
+        
+        return dataLocal.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'
@@ -388,7 +462,9 @@ function formatarDataCompleta(dataString) {
         const data = new Date(dataString);
         if (isNaN(data.getTime())) return dataString;
         
-        return data.toLocaleDateString('pt-BR', {
+        const dataLocal = new Date(data.getTime() + data.getTimezoneOffset() * 60000);
+        
+        return dataLocal.toLocaleDateString('pt-BR', {
             weekday: 'long',
             day: '2-digit',
             month: '2-digit',
@@ -709,8 +785,18 @@ async function abrirModalDetalhes(id) {
     }
     
     if (dataDevolucaoReal) {
-        const devolucaoReal = emprestimo.dataDevolucaoReal || '';
-        dataDevolucaoReal.textContent = devolucaoReal ? formatarDataCompleta(devolucaoReal) : 'Não devolvido';
+        if (emprestimo.dataDevolucaoReal) {
+            dataDevolucaoReal.textContent = formatarDataCompleta(emprestimo.dataDevolucaoReal);
+        } else if (emprestimo.status === 'DEVOLVIDO' && emprestimo.registro) {
+            const dataRegistro = extrairDataDoRegistro(emprestimo.registro);
+            if (dataRegistro) {
+                dataDevolucaoReal.textContent = formatarDataCompleta(dataRegistro);
+            } else {
+                dataDevolucaoReal.textContent = 'Não devolvido';
+            }
+        } else {
+            dataDevolucaoReal.textContent = 'Não devolvido';
+        }
     }
     
     if (statusEmprestimo) {
@@ -748,7 +834,7 @@ async function abrirModalDetalhes(id) {
     }
     
     if (registro) {
-        registro.textContent = emprestimo.registro || formatarDataHora(new Date());
+        registro.textContent = formatarRegistro(emprestimo.registro) || formatarDataHora(new Date());
     }
     
     window.emprestimoAtualId = id;
@@ -788,6 +874,12 @@ function devolverDoModal() {
 }
 
 function confirmarDevolucao(id, livro) {
+    const emprestimo = emprestimosAtuais.find(e => e.id === id);
+    if (emprestimo && emprestimo.status === 'DEVOLVIDO') {
+        mostrarNotificacao('Este livro já foi devolvido!', 'info');
+        return;
+    }
+    
     if (!confirm(`Confirmar devolução do livro "${livro}"?`)) {
         return;
     }
@@ -813,9 +905,28 @@ async function devolverLivro(id) {
         console.log('📨 Resposta da devolução:', resultado);
         
         if (resultado.success) {
+            // Atualização otimista
+            const index = emprestimosAtuais.findIndex(e => e.id === id);
+            if (index !== -1) {
+                const hoje = new Date();
+                const ano = hoje.getFullYear();
+                const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+                const dia = String(hoje.getDate()).padStart(2, '0');
+                const dataISO = `${ano}-${mes}-${dia}`;
+                const horaFormatada = hoje.toLocaleString('pt-BR');
+                
+                emprestimosAtuais[index].status = 'DEVOLVIDO';
+                emprestimosAtuais[index].dataDevolucaoReal = dataISO;
+                emprestimosAtuais[index].registro = horaFormatada;
+            }
+            
             mostrarNotificacao('✅ Livro devolvido com sucesso!', 'success');
-            await carregarEmprestimos();
+            
             closeModalDetalhes();
+            atualizarEstatisticas(emprestimosAtuais);
+            aplicarFiltros();
+            
+            await carregarEmprestimos();
         } else {
             mostrarNotificacao(resultado.error || 'Erro ao devolver livro', 'error');
         }
