@@ -1,11 +1,3 @@
-// ============================================
-// SISTEMA DE REGISTRO DE ATESTADOS - atestados.js
-// ============================================
-
-// As URLs já estão definidas no config.js:
-// API_ATESTADOS_URL, API_ESTUDANTES_URL, API_UPLOAD_URL, PASTAS_DRIVE
-
-// Configuração das turmas (mesma da ficha do aluno)
 const TURMAS_IDS = {
     '1M': { nome: '1ª Série Matutino', id: '1Yhi51PoQYXkhzCH3Bo6W3NLSqeKnIXGaX7FgA3huMro' },
     '1V': { nome: '1ª Série Vespertino', id: '1jL-iasMF06dJY0FCkM3PIqX0jjq0AhzBP5G_PVfpW-U' },
@@ -133,7 +125,7 @@ function configurarDatas() {
     if (dataInicio) dataInicio.value = hojeStr;
     if (dataFim) dataFim.value = hojeStr;
     
-    dataInicio.min = hojeStr;
+
     dataFim.min = hojeStr;
     
     dataInicio.addEventListener('change', () => {

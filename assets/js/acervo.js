@@ -1,3 +1,7 @@
+// ============================================
+// ACERVO.JS - SISTEMA DE BIBLIOTECA (COMPLETO)
+// ============================================
+
 const btnAddLivro      = document.getElementById('btnAddLivro');
 const modal            = document.getElementById('modalLivro');
 const btnCloseModal    = document.getElementById('btnCloseModal');
@@ -29,13 +33,11 @@ function converterLinksDrive(urlString) {
     const urlsConvertidas = [];
 
     urls.forEach(url => {
-        // Formato: /d/FILE_ID/
         const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
 
         if (match) {
             urlsConvertidas.push(`https://lh3.googleusercontent.com/d/${match[1]}`);
         }
-        // Já é uma URL de imagem direta ou lh3 ou drive/uc
         else if (
             url.match(/\.(jpg|jpeg|png|gif|webp|bmp)/i) ||
             url.includes('lh3.googleusercontent.com') ||
@@ -43,7 +45,6 @@ function converterLinksDrive(urlString) {
         ) {
             urlsConvertidas.push(url);
         }
-        // Outros formatos do Drive com id=
         else if (url.includes('drive.google.com')) {
             const idMatch = url.match(/id=([a-zA-Z0-9_-]+)/) ||
                             url.match(/file\/d\/([a-zA-Z0-9_-]+)/);
@@ -143,14 +144,13 @@ async function uploadImagem(file, nomeArquivo) {
         formData.append('data', base64Puro);
         formData.append('name', nomeArquivo);
         formData.append('mime', file.type);
-        formData.append('folderId', PASTAS_DRIVE.LIVROS);  // ← ENVIA O ID DA PASTA DE LIVROS
+        formData.append('folderId', PASTAS_DRIVE.LIVROS);
 
         const response  = await fetch(API_UPLOAD_URL, { method: 'POST', body: formData });
         const resultado = await response.json();
 
         console.log('📨 Resposta do upload:', resultado);
 
-        // Aceita tanto 'ok' quanto 'success' e pega a URL correta
         if (resultado.status === 'ok' || resultado.success) {
             const url = resultado.url || resultado.link || '';
             return { success: true, url: url };
@@ -176,10 +176,11 @@ if (formLivro) {
         const cbl        = document.getElementById('cbl')?.value.trim()     || '';
         const categoria  = document.getElementById('categoria')?.value      || '';
         const ano        = document.getElementById('ano')?.value            || '';
+        const edicao     = document.getElementById('edicao')?.value.trim()  || '1';
         const editora    = document.getElementById('editora')?.value.trim() || '';
         const quantidade = document.getElementById('quantidade')?.value     || '1';
 
-        if (!autor || !titulo || !cbl || !categoria || !ano || !editora) {
+        if (!autor || !titulo || !cbl || !categoria || !ano || !edicao || !editora) {
             mostrarNotificacao('❌ Preencha todos os campos obrigatórios!', 'error');
             return;
         }
@@ -192,7 +193,6 @@ if (formLivro) {
         try {
             let linkImagem = '';
 
-            // 1. Upload da imagem (se houver) → API_UPLOAD_URL
             const imagemFile = imagemInput?.files[0];
             if (imagemFile) {
                 const extensao    = imagemFile.name.split('.').pop();
@@ -208,7 +208,6 @@ if (formLivro) {
                 }
             }
 
-            // 2. Salvar livro na planilha → API_URL
             const livroData = {
                 action:     'addBook',
                 autor,
@@ -216,6 +215,7 @@ if (formLivro) {
                 cbl,
                 categoria,
                 ano:        parseInt(ano),
+                edicao:     parseInt(edicao),
                 editora,
                 quantidade: parseInt(quantidade),
                 link:       linkImagem
@@ -281,13 +281,10 @@ function exibirLivros(livros) {
     const booksGrid = document.getElementById('booksGrid');
     if (!booksGrid) return;
 
-    // Salva a lista completa para filtros
     livrosCompletos = livros || [];
     
-    // Atualiza categorias
     atualizarCategorias(livrosCompletos);
     
-    // Aplica filtros e exibe
     aplicarFiltros();
 }
 
@@ -297,7 +294,6 @@ function aplicarFiltros() {
     const booksGrid = document.getElementById('booksGrid');
     if (!booksGrid) return;
     
-    // Filtra por categoria
     let livrosFiltrados = livrosCompletos;
     
     if (categoriaAtiva !== 'todos') {
@@ -307,7 +303,6 @@ function aplicarFiltros() {
         });
     }
     
-    // Filtra por termo de busca (apenas título ou autor)
     if (termoBusca.trim() !== '') {
         const termo = termoBusca.toLowerCase().trim();
         livrosFiltrados = livrosFiltrados.filter(livro => {
@@ -318,7 +313,6 @@ function aplicarFiltros() {
         });
     }
     
-    // Exibe os livros filtrados
     booksGrid.innerHTML = '';
     
     if (livrosFiltrados.length === 0) {
@@ -333,7 +327,6 @@ function aplicarFiltros() {
         livrosFiltrados.forEach(livro => booksGrid.appendChild(criarCardLivro(livro)));
     }
     
-    // Atualiza contador de resultados
     atualizarContadorResultados(livrosFiltrados.length);
 }
 
@@ -343,7 +336,6 @@ function atualizarCategorias(livros) {
     const container = document.getElementById('categoriasContainer');
     if (!container) return;
     
-    // Extrai categorias únicas
     const categorias = new Set();
     livros.forEach(livro => {
         const cat = livro.categoria || livro.CATEGORIA;
@@ -352,10 +344,8 @@ function atualizarCategorias(livros) {
         }
     });
     
-    // Converte para array e ordena
     const categoriasArray = Array.from(categorias).sort();
     
-    // Cria os botões de categoria
     container.innerHTML = '';
     
     categoriasArray.forEach(categoria => {
@@ -372,25 +362,20 @@ function atualizarCategorias(livros) {
         `;
         
         btn.addEventListener('click', () => {
-            // Remove active de todos
             document.querySelectorAll('.categoria-btn').forEach(b => 
                 b.classList.remove('active')
             );
             
-            // Adiciona active no clicado
             btn.classList.add('active');
             
-            // Atualiza categoria ativa
             categoriaAtiva = categoria.toLowerCase();
             
-            // Aplica filtros
             aplicarFiltros();
         });
         
         container.appendChild(btn);
     });
     
-    // Atualiza estado do botão "Todos"
     const btnTodos = document.querySelector('[data-categoria="todos"]');
     if (btnTodos) {
         const totalLivros = livros.length;
@@ -417,7 +402,6 @@ function inicializarBuscaEFiltros() {
     const clearSearch = document.getElementById('clearSearch');
     const btnTodos = document.querySelector('[data-categoria="todos"]');
     
-    // Cria elemento para mostrar contagem de resultados
     const filtrosContainer = document.querySelector('.filtros-container');
     if (filtrosContainer && !document.getElementById('resultadosInfo')) {
         const resultadosInfo = document.createElement('div');
@@ -430,12 +414,10 @@ function inicializarBuscaEFiltros() {
         filtrosContainer.appendChild(resultadosInfo);
     }
     
-    // Evento de busca
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             termoBusca = e.target.value;
             
-            // Mostra/esconde botão limpar
             if (clearSearch) {
                 clearSearch.style.display = termoBusca ? 'flex' : 'none';
             }
@@ -444,7 +426,6 @@ function inicializarBuscaEFiltros() {
         });
     }
     
-    // Botão limpar busca
     if (clearSearch) {
         clearSearch.addEventListener('click', () => {
             if (searchInput) {
@@ -457,7 +438,6 @@ function inicializarBuscaEFiltros() {
         });
     }
     
-    // Botão "Todos"
     if (btnTodos) {
         btnTodos.addEventListener('click', () => {
             document.querySelectorAll('.categoria-btn').forEach(b => 
@@ -480,7 +460,6 @@ function criarCardLivro(livro) {
     img.className = 'livro-imagem';
     img.alt       = livro.titulo || livro.TITULO || 'Livro';
 
-    // ✅ Converte o link do Drive para URL de exibição direta
     const linkBruto        = livro.link || livro.LINK || '';
     const linksConvertidos = converterLinksDrive(linkBruto);
     const linkImagem       = linksConvertidos[0] || '';
@@ -657,6 +636,23 @@ async function carregarEstudantes(turma) {
     }
 }
 
+// Verificar disponibilidade do livro (em segundo plano)
+async function verificarDisponibilidadeLivro(livro) {
+    try {
+        const titulo = livro.titulo || livro.TITULO || '';
+        const response = await fetch(`${API_EMPRESTIMO_URL}?action=checkDisponibilidade&livro=${encodeURIComponent(titulo)}`);
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            return resultado;
+        }
+        return { disponivel: true, quantidadeTotal: 0, emprestados: 0, disponiveis: 0 };
+    } catch (error) {
+        console.error('Erro ao verificar disponibilidade:', error);
+        return { disponivel: true, quantidadeTotal: 0, emprestados: 0, disponiveis: 0 };
+    }
+}
+
 // Preencher select de turmas
 function preencherSelectTurmas() {
     const selectTurma = document.getElementById('turma');
@@ -686,15 +682,21 @@ function preencherDatalistEstudantes(estudantes) {
     });
 }
 
+// 🆕 ABRIR MODAL RÁPIDO - Abre primeiro, verifica depois
 function abrirModalEmprestimo(livro) {
     if (!modalEmprestimo) return;
     
     // Salvar o livro atual para uso no submit
     livroAtualEmprestimo = livro;
 
+    // Abrir modal IMEDIATAMENTE
     const inputLivro = document.getElementById('livro');
-    if (inputLivro) inputLivro.value = livro.titulo || livro.TITULO || '';
+    if (inputLivro) {
+        inputLivro.value = `${livro.titulo || livro.TITULO} (Verificando disponibilidade...)`;
+        inputLivro.style.color = '#666';
+    }
 
+    // Preencher datas
     const hoje = new Date();
     const devolucao = new Date();
     devolucao.setDate(devolucao.getDate() + 15);
@@ -730,38 +732,86 @@ function abrirModalEmprestimo(livro) {
     const datalist = document.getElementById('listaEstudantes');
     if (datalist) datalist.innerHTML = '';
     
-    // Restaurar botão de submit se existir
+    // Pegar botão de submit
     const submitBtn = formEmprestimo?.querySelector('.btn-submit');
     if (submitBtn) {
         submitBtn.innerHTML = '<i class="fas fa-save"></i> Registrar Empréstimo';
         submitBtn.disabled = false;
     }
     
+    // Abrir o modal
     modalEmprestimo.classList.add('active');
+    
+    // VERIFICAR DISPONIBILIDADE EM SEGUNDO PLANO
+    verificarDisponibilidadeLivro(livro).then(disponibilidade => {
+        if (!disponibilidade.disponivel) {
+            // Livro INDISPONÍVEL
+            if (inputLivro) {
+                inputLivro.value = `${livro.titulo || livro.TITULO} (❌ INDISPONÍVEL)`;
+                inputLivro.style.color = '#f44336';
+                inputLivro.style.fontWeight = 'bold';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-ban"></i> Indisponível';
+                submitBtn.style.background = '#f44336';
+            }
+            mostrarNotificacao(
+                `⚠️ Todos os ${disponibilidade.quantidadeTotal} exemplares de "${livro.titulo || livro.TITULO}" já estão emprestados!`, 
+                'error'
+            );
+        } else if (disponibilidade.disponiveis <= 3) {
+            // Poucos exemplares
+            if (inputLivro) {
+                inputLivro.value = `${livro.titulo || livro.TITULO} (⚠️ Apenas ${disponibilidade.disponiveis} de ${disponibilidade.quantidadeTotal})`;
+                inputLivro.style.color = '#ff9800';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Registrar Empréstimo';
+                submitBtn.style.background = '';
+            }
+        } else {
+            // Disponível normalmente
+            if (inputLivro) {
+                inputLivro.value = `${livro.titulo || livro.TITULO} (${disponibilidade.disponiveis} disponíveis)`;
+                inputLivro.style.color = '#4CAF50';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Registrar Empréstimo';
+                submitBtn.style.background = '';
+            }
+        }
+    }).catch(error => {
+        console.error('Erro ao verificar disponibilidade:', error);
+        if (inputLivro) {
+            inputLivro.value = livro.titulo || livro.TITULO;
+            inputLivro.style.color = '';
+        }
+    });
 }
 
 function closeModalEmprestimo() {
     if (!modalEmprestimo) return;
     
-    // Fechar modal
     modalEmprestimo.classList.remove('active');
     
-    // Resetar formulário
     if (formEmprestimo) {
         formEmprestimo.reset();
         
-        // Restaurar botão de submit
         const submitBtn = formEmprestimo.querySelector('.btn-submit');
         if (submitBtn) {
             submitBtn.innerHTML = '<i class="fas fa-save"></i> Registrar Empréstimo';
             submitBtn.disabled = false;
+            submitBtn.style.background = '';
         }
     }
     
-    // Limpar campos específicos
     const estudanteInput = document.getElementById('estudante');
     const selectTurma = document.getElementById('turma');
     const datalist = document.getElementById('listaEstudantes');
+    const inputLivro = document.getElementById('livro');
     
     if (estudanteInput) {
         estudanteInput.value = '';
@@ -770,6 +820,10 @@ function closeModalEmprestimo() {
     }
     if (selectTurma) selectTurma.value = '';
     if (datalist) datalist.innerHTML = '';
+    if (inputLivro) {
+        inputLivro.style.color = '';
+        inputLivro.style.fontWeight = '';
+    }
     
     livroAtualEmprestimo = null;
 }
@@ -782,7 +836,6 @@ if (modalEmprestimo) {
         if (e.target === modalEmprestimo) closeModalEmprestimo();
     });
     
-    // Evento para quando a turma for selecionada
     const selectTurma = document.getElementById('turma');
     if (selectTurma) {
         selectTurma.addEventListener('change', async (e) => {
@@ -790,7 +843,6 @@ if (modalEmprestimo) {
             const estudanteInput = document.getElementById('estudante');
             
             if (!turmaSelecionada) {
-                // Limpar datalist se nenhuma turma selecionada
                 const datalist = document.getElementById('listaEstudantes');
                 if (datalist) datalist.innerHTML = '';
                 if (estudanteInput) {
@@ -801,22 +853,18 @@ if (modalEmprestimo) {
                 return;
             }
             
-            // Mostrar loading no campo estudante
             if (estudanteInput) {
                 estudanteInput.placeholder = 'Carregando estudantes...';
                 estudanteInput.disabled = true;
             }
             
-            // Carregar estudantes da turma selecionada
             let estudantes = estudantesPorTurma[turmaSelecionada];
             if (!estudantes) {
                 estudantes = await carregarEstudantes(turmaSelecionada);
             }
             
-            // Preencher datalist
             preencherDatalistEstudantes(estudantes);
             
-            // Habilitar campo
             if (estudanteInput) {
                 estudanteInput.placeholder = 'Digite ou selecione o nome do estudante';
                 estudanteInput.disabled = false;
@@ -903,12 +951,11 @@ async function devolverLivro(id) {
     }
 }
 
-// Handler do formulário de empréstimo (CORRIGIDO - BOTÃO NÃO TRAVA MAIS)
+// Handler do formulário de empréstimo
 if (formEmprestimo) {
     formEmprestimo.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Encontrar o botão de submit
         const submitBtn = formEmprestimo.querySelector('.btn-submit');
         if (!submitBtn) {
             console.error('Botão submit não encontrado!');
@@ -926,7 +973,6 @@ if (formEmprestimo) {
         const dataDevolucao = document.getElementById('data_devolucao')?.value;
         const observacoes = document.getElementById('observacoes')?.value.trim();
 
-        // Validações
         if (!turma) {
             mostrarNotificacao('❌ Selecione a turma!', 'error');
             return;
@@ -937,7 +983,6 @@ if (formEmprestimo) {
             return;
         }
         
-        // Verificar se o estudante existe na turma selecionada
         const estudantesDaTurma = estudantesPorTurma[turma] || [];
         const estudanteExiste = estudantesDaTurma.some(e => 
             e.nome.toLowerCase() === estudante.toLowerCase()
@@ -958,10 +1003,8 @@ if (formEmprestimo) {
             return;
         }
 
-        // Guardar o HTML original do botão
         const originalHTML = submitBtn.innerHTML;
         
-        // Desabilitar botão e mostrar loading
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
         submitBtn.disabled = true;
 
@@ -976,15 +1019,12 @@ if (formEmprestimo) {
             });
 
             if (!resultado.success) {
-                // Restaurar botão em caso de erro
                 submitBtn.innerHTML = originalHTML;
                 submitBtn.disabled = false;
             }
-            // Se sucesso, o modal fecha e o botão é restaurado no closeModalEmprestimo()
             
         } catch (error) {
             console.error('Erro no submit:', error);
-            // Restaurar botão em caso de erro
             submitBtn.innerHTML = originalHTML;
             submitBtn.disabled = false;
             mostrarNotificacao('❌ Erro ao processar empréstimo!', 'error');
@@ -1017,10 +1057,15 @@ function mostrarNotificacao(mensagem, tipo = 'info') {
         z-index: 10000;
         font-family: Inter, sans-serif;
         font-size: 0.95rem;
+        animation: slideIn 0.3s ease;
     `;
 
     document.body.appendChild(notificacao);
-    setTimeout(() => notificacao.remove(), 3500);
+    
+    setTimeout(() => {
+        notificacao.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notificacao.remove(), 300);
+    }, 3500);
 }
 
 // ================================================
@@ -1034,13 +1079,25 @@ if (refreshButton) {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Sistema iniciado!');
     
-    // Carregar turmas ao iniciar
     await carregarTurmas();
     
-    // Inicializa busca e filtros
     inicializarBuscaEFiltros();
     
     carregarLivros();
 });
+
+// Adicionar animações
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
 
 console.log('✅ acervo.js carregado!');
