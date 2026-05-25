@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha do Professor | Escola Estadual Mariana Cavalcanti</title>
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/ficha_professor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h1>Escola Estadual<span> Mariana Cavalcanti</span></h1>
+                </div>
+                <nav class="nav-menu">
+                    <ul>
+                        <li class="nav-link">
+                            <a href="index.html">
+                                <i class="fa-brands fa-bimobject"></i>
+                                <span>Biblioteca</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="arcevo.html">
+                                <i class="fas fa-book"></i>
+                                <span>Livros</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="emprestimo.html">
+                                <i class="fas fa-book-reader"></i>
+                                <span>Empréstimos</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="controlDidatico.html">
+                                <i class="fa-solid fa-gear"></i>
+                                <span>Controle Didático</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="RegisterAtestado.html">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                <span>Registro de Atestados</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="ficha_aluno.html">
+                                <i class="fa-solid fa-user-graduate"></i>
+                                <span>FICHA DO ALUNO</span>
+                            </a>
+                        </li>
+                        <li class="nav-link active">
+                            <a href="ficha_professor.html">
+                                <i class="fa-solid fa-chalkboard-teacher"></i>
+                                <span>FICHA DO PROFESSOR</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- ===== LAYOUT PRINCIPAL: SIDEBAR + CONTEÚDO ===== -->
+        <main class="professor-layout">
+            <!-- Sidebar Lateral -->
+            <aside class="professor-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="sidebar-title-group">
+                        <h3>Corpo Docente</h3>
+                        <span id="teacherCount">Carregando...</span>
+                    </div>
+                </div>
+                
+                <div class="sidebar-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" 
+                           id="searchProfessor" 
+                           placeholder="Buscar professor...">
+                </div>
+                
+                <nav class="sidebar-nav" id="teachersSidebarList">
+                    <div class="sidebar-loading">
+                        <div class="spinner-small"></div>
+                        <span>Carregando...</span>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Área Principal -->
+            <section class="professor-content" id="professorContent">
+                <!-- Estado Inicial - Nenhum professor selecionado -->
+                <div class="welcome-state" id="welcomeState">
+                    <div class="welcome-icon-wrap">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h2>Ficha do Professor</h2>
+                    <p>Selecione um professor na lista ao lado para visualizar sua ficha completa.</p>
+                    <div class="welcome-decoration">
+                        <div class="decoration-line"></div>
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Lista de Professores</span>
+                        <div class="decoration-line"></div>
+                    </div>
+                </div>
+
+                <!-- Ficha do Professor -->
+                <div class="teacher-profile" id="teacherProfile" style="display: none;">
+                    
+                    <!-- Botão de Impressão -->
+                    <div class="btn-imprimir-wrapper">
+                        <button class="btn-imprimir" onclick="imprimirFicha()" title="Imprimir ficha completa do professor">
+                            <i class="fas fa-print"></i>
+                            Imprimir Ficha
+                        </button>
+                    </div>
+
+                    <!-- ===== CABEÇALHO INSTITUCIONAL ===== -->
+                    <div class="institutional-header">
+                        <div class="institutional-top">
+                            <div class="institutional-logo">
+                                <img src="assets/img/RN.png" 
+                                     alt="Governo do RN"
+                                     onerror="this.style.display='none'">
+                            </div>
+                            <div class="institutional-titles">
+                                <div class="gov-line">Governo do Estado do Rio Grande do Norte</div>
+                                <h4>Secretaria de Estado da Educação e da Cultura</h4>
+                                <div class="subtitle">15ª Diretoria Regional de Educação e Cultura - DIREC</div>
+                            </div>
+                        </div>
+                        <div class="institutional-bottom">
+                            <div class="form-title">CADASTRO DE FUNCIONÁRIO</div>
+                        </div>
+                    </div>
+
+                    <!-- Cabeçalho do Perfil -->
+                    <div class="profile-header">
+                        <div class="profile-header-accent"></div>
+                        <div class="profile-photo-section">
+                            <div class="profile-photo-wrapper" id="profilePhotoWrapper">
+                                <img src="" alt="Foto do Professor" id="profilePhoto" class="profile-photo">
+                                <div class="profile-photo-overlay" onclick="ampliarImagem(document.getElementById('profilePhoto').src)">
+                                    <i class="fas fa-search-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-info-section">
+                            <div class="profile-badge">
+                                <i class="fas fa-star"></i>
+                                <span id="profileStatus">Ativo</span>
+                            </div>
+                            <h2 class="profile-name" id="profileName"></h2>
+                            <div class="profile-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-id-card"></i>
+                                    <span id="profileMatricula"></span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span id="profileCargo"></span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="profileCargaHoraria"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Corpo da Ficha -->
+                    <div class="profile-body" id="teacherData">
+                        <!-- Conteúdo dinâmico -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ===== MODAL PARA AMPLIAR IMAGEM ===== -->
+    <div id="imageModal" class="image-modal" onclick="fecharModalImagem()">
+        <span class="image-modal-close">&times;</span>
+        <img id="modalImage" src="" alt="Foto ampliada">
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/ficha_professor.js"></script>
+</body>
+</html>

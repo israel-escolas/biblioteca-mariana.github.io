@@ -13,6 +13,9 @@ const API_EMPRESTIMO_URL = 'https://script.google.com/macros/s/AKfycbxjyfir-xM--
 // API de Estudantes 
 const API_ESTUDANTES_URL = 'https://script.google.com/macros/s/AKfycbyBITY6872yZXxMtRwOxEGqakIa6QeTNUD2QoBbrkjlbp2mE9vp0QjUB3joiNn5iEdg/exec';
 
+// API de Professores
+const API_PROFESSORES_URL = 'https://script.google.com/macros/s/AKfycbwhFsmrgfBjWFLE8Z1vQZdVIKw3BJA9dW_3679fTDyrsZ3ZqDcZLkkNk6q8egy2Nis/exec';
+
 // API de Atestados 
 const API_ATESTADOS_URL = 'https://script.google.com/macros/s/AKfycbzqG--WPruWDk_IeJv7cByXKgGT7MF1-TKHyi0gD_2MvU-CHkOoPQGkBlCPY76S-Vw/exec';
 
