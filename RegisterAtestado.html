@@ -171,8 +171,8 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-list"></i> Registros de Atestados</h3>
-                    <button class="btn-print no-print" id="btnImprimir" title="Imprimir lista">
-                        <i class="fas fa-print"></i> Imprimir
+                    <button class="btn-print no-print" id="btnImprimir" title="Imprimir lista filtrada">
+                        <i class="fas fa-print"></i> Imprimir Lista
                     </button>
                 </div>
                 <div class="card-body">
@@ -184,15 +184,22 @@
                                 <i class="fas fa-users"></i> Turma/Grupo
                             </label>
                             <select id="filtroTurma">
-                                <option value="Todas">Todas</option>
+                                <option value="Todas">Todas as Turmas</option>
                             </select>
                         </div>
                         
                         <div class="filtro-grupo">
-                            <label for="filtroData">
-                                <i class="fas fa-calendar"></i> Data Início
+                            <label for="filtroDataInicio">
+                                <i class="fas fa-calendar-alt"></i> Data Início (De)
                             </label>
-                            <input type="date" id="filtroData">
+                            <input type="date" id="filtroDataInicio" placeholder="De">
+                        </div>
+                        
+                        <div class="filtro-grupo">
+                            <label for="filtroDataFim">
+                                <i class="fas fa-calendar-check"></i> Data Fim (Até)
+                            </label>
+                            <input type="date" id="filtroDataFim" placeholder="Até">
                         </div>
                         
                         <div class="filtro-grupo">
@@ -208,6 +215,12 @@
                         </div>
                         
                         <div class="filtro-acoes">
+                            <button class="btn-filter-quick" id="btnFiltroRapido7" title="Data final = Data inicial + 7 dias">
+                                <i class="fas fa-calendar-week"></i> +7 dias
+                            </button>
+                            <button class="btn-filter-quick" id="btnFiltroRapido30" title="Data final = Data inicial + 30 dias">
+                                <i class="fas fa-calendar-alt"></i> +30 dias
+                            </button>
                             <button class="btn-secondary" id="btnAtualizar" title="Atualizar lista">
                                 <i class="fas fa-sync-alt"></i> Atualizar
                             </button>
@@ -247,7 +260,7 @@
             <div class="modal-container modal-large">
                 <div class="modal-header">
                     <h3><i class="fas fa-edit"></i> Editar Justificativa</h3>
-                    <button class="modal-close" onclick="App.fecharModalEditar()">
+                    <button class="modal-close" onclick="App.fecharModalEditar()" title="Fechar">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -319,7 +332,7 @@
             <div class="modal-container" style="max-width: 450px;">
                 <div class="modal-header">
                     <h3><i class="fas fa-trash-alt" style="color: #ef4444;"></i> Confirmar Exclusão</h3>
-                    <button class="modal-close" onclick="App.fecharModalExcluir()">
+                    <button class="modal-close" onclick="App.fecharModalExcluir()" title="Fechar">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -327,7 +340,7 @@
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #f59e0b; margin-bottom: 1rem;"></i>
                     <p style="font-size: 1.1rem; font-weight: 500;">Tem certeza que deseja excluir esta justificativa?</p>
                     <p style="color: #64748b; margin-top: 0.5rem;" id="excluirNome"></p>
-                    <p style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem;">Esta ação não pode ser desfeita!</p>
+                    <p style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem;">⚠️ Esta ação não pode ser desfeita!</p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn-cancel" onclick="App.fecharModalExcluir()">

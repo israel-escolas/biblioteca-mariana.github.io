@@ -1,13 +1,6 @@
-// ============================================
-// SISTEMA DE ATESTADOS - BIBLIOTECA
-// Versão 2.0 - Refatorado e Organizado
-// ============================================
 
 'use strict';
 
-// ============================================
-// 1. CONFIGURAÇÕES E CONSTANTES
-// ============================================
 
 const TURMAS_IDS = {
     '1M': { nome: '1ª Série Matutino', id: '1Yhi51PoQYXkhzCH3Bo6W3NLSqeKnIXGaX7FgA3huMro' },
@@ -87,10 +80,13 @@ const DOM = {
     tbodyRegistros: null,
     btnAtualizar: null,
     filtroTurma: null,
-    filtroData: null,
+    filtroDataInicio: null,
+    filtroDataFim: null,
     filtroStatus: null,
     modalEditar: null,
     modalExcluir: null,
+    btnFiltroRapido7: null,
+    btnFiltroRapido30: null,
     
     init() {
         this.tabBtns = document.querySelectorAll('.tab-btn');
@@ -107,10 +103,13 @@ const DOM = {
         this.tbodyRegistros = document.getElementById('tbodyRegistros');
         this.btnAtualizar = document.getElementById('btnAtualizar');
         this.filtroTurma = document.getElementById('filtroTurma');
-        this.filtroData = document.getElementById('filtroData');
+        this.filtroDataInicio = document.getElementById('filtroDataInicio');
+        this.filtroDataFim = document.getElementById('filtroDataFim');
         this.filtroStatus = document.getElementById('filtroStatus');
         this.modalEditar = document.getElementById('modalEditar');
         this.modalExcluir = document.getElementById('modalExcluir');
+        this.btnFiltroRapido7 = document.getElementById('btnFiltroRapido7');
+        this.btnFiltroRapido30 = document.getElementById('btnFiltroRapido30');
     }
 };
 
@@ -124,15 +123,18 @@ class Utils {
     static formatarData(dataString) {
         if (!dataString) return '—';
         
+        // Se já está no formato brasileiro
         if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataString)) {
             return dataString;
         }
         
+        // Se está no formato ISO (YYYY-MM-DD)
         if (/^\d{4}-\d{2}-\d{2}$/.test(dataString)) {
             const [ano, mes, dia] = dataString.split('-');
             return `${dia}/${mes}/${ano}`;
         }
         
+        // Tenta parsear como data
         try {
             const data = new Date(dataString);
             if (!isNaN(data.getTime())) {
@@ -143,7 +145,7 @@ class Utils {
                 });
             }
         } catch (e) {
-            // Ignora
+            // Ignora erro
         }
         
         return dataString;
@@ -152,9 +154,14 @@ class Utils {
     // Converte data para ISO (YYYY-MM-DD)
     static converterDataParaISO(dataString) {
         if (!dataString) return '';
+        
+        // Se já está em ISO
         if (/^\d{4}-\d{2}-\d{2}$/.test(dataString)) return dataString;
+        
+        // Se contém timestamp
         if (dataString.includes('T')) return dataString.split('T')[0];
         
+        // Converte de DD/MM/YYYY
         const match = dataString.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
         if (match) return `${match[3]}-${match[2]}-${match[1]}`;
         
@@ -164,6 +171,13 @@ class Utils {
     // Obtém data de hoje no formato YYYY-MM-DD
     static getHoje() {
         return new Date().toISOString().split('T')[0];
+    }
+    
+    // Calcula data N dias atrás
+    static getDataAtras(dias) {
+        const data = new Date();
+        data.setDate(data.getDate() - dias);
+        return data.toISOString().split('T')[0];
     }
     
     // Converte arquivo para Base64
@@ -281,6 +295,7 @@ class DataManager {
     static carregarTurmas() {
         const turmas = Object.values(TURMAS_NOMES).sort();
         
+        // Select do formulário
         if (DOM.selectTurma) {
             DOM.selectTurma.innerHTML = '<option value="">Selecione a turma</option>';
             
@@ -299,8 +314,9 @@ class DataManager {
             DOM.selectTurma.appendChild(optionFunc);
         }
         
+        // Select do filtro
         if (DOM.filtroTurma) {
-            DOM.filtroTurma.innerHTML = '<option value="Todas">Todas</option>';
+            DOM.filtroTurma.innerHTML = '<option value="Todas">Todas as Turmas</option>';
             
             turmas.filter(t => t !== 'FUNCIONÁRIOS').forEach(turma => {
                 const option = document.createElement('option');
@@ -341,6 +357,7 @@ class DataManager {
                 return funcionariosCache;
             }
             
+            console.warn('⚠️ Nenhum funcionário encontrado');
             return [];
             
         } catch (error) {
@@ -359,7 +376,7 @@ class DataManager {
             return;
         }
         
-        // Funcionários
+        // Caso especial: Funcionários
         if (turmaSelecionada === 'FUNCIONÁRIOS') {
             DOM.selectAluno.innerHTML = '<option value="">Carregando funcionários...</option>';
             DOM.selectAluno.disabled = true;
@@ -392,7 +409,7 @@ class DataManager {
             return;
         }
         
-        // Alunos
+        // Alunos normais
         DOM.selectAluno.innerHTML = '<option value="">Carregando alunos...</option>';
         DOM.selectAluno.disabled = true;
         
@@ -480,12 +497,14 @@ class DataManager {
         }
     }
     
-    // Filtra registros
+    // Filtra registros com todos os critérios
     static filtrarRegistros() {
         console.log('🔍 Filtrando registros...');
+        console.log('📊 Total de registros antes dos filtros:', registrosCompletos.length);
         
         let filtrados = [...registrosCompletos];
         
+        // Filtro por turma
         const turmaFiltro = DOM.filtroTurma.value;
         if (turmaFiltro && turmaFiltro !== 'Todas') {
             const filtroNormalizado = TURMAS_NORMALIZADAS[turmaFiltro] || turmaFiltro;
@@ -495,16 +514,42 @@ class DataManager {
                 const turmaNormalizada = TURMAS_NORMALIZADAS[turmaRegistro] || turmaRegistro;
                 return turmaNormalizada === filtroNormalizado;
             });
+            console.log('📊 Após filtro turma:', filtrados.length);
         }
         
-        const dataFiltro = DOM.filtroData.value;
-        if (dataFiltro) {
+        // Filtro por período (data início E data fim)
+        const dataInicioFiltro = DOM.filtroDataInicio?.value;
+        const dataFimFiltro = DOM.filtroDataFim?.value;
+        
+        if (dataInicioFiltro || dataFimFiltro) {
             filtrados = filtrados.filter(r => {
-                let dataInicio = r.Datainicio || r.DATAINICIO || r.dataInicio || '';
-                return Utils.converterDataParaISO(dataInicio) === dataFiltro;
+                let dataRegistro = Utils.converterDataParaISO(
+                    r.Datainicio || r.DATAINICIO || r.dataInicio || ''
+                );
+                
+                if (!dataRegistro) return false;
+                
+                // Se ambas as datas foram informadas (período)
+                if (dataInicioFiltro && dataFimFiltro) {
+                    return dataRegistro >= dataInicioFiltro && dataRegistro <= dataFimFiltro;
+                }
+                
+                // Se apenas data início foi informada (a partir de)
+                if (dataInicioFiltro && !dataFimFiltro) {
+                    return dataRegistro >= dataInicioFiltro;
+                }
+                
+                // Se apenas data fim foi informada (até)
+                if (!dataInicioFiltro && dataFimFiltro) {
+                    return dataRegistro <= dataFimFiltro;
+                }
+                
+                return true;
             });
+            console.log('📊 Após filtro período:', filtrados.length);
         }
         
+        // Filtro por status
         const statusFiltro = DOM.filtroStatus.value;
         if (statusFiltro && statusFiltro !== 'Todos') {
             filtrados = filtrados.filter(r => {
@@ -512,6 +557,7 @@ class DataManager {
                 status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
                 return status === statusFiltro;
             });
+            console.log('📊 Após filtro status:', filtrados.length);
         }
         
         // Ordenar por data (mais recente primeiro)
@@ -521,8 +567,89 @@ class DataManager {
             return dataB.localeCompare(dataA);
         });
         
-        console.log('✅ Filtrados:', filtrados.length);
+        console.log('✅ Total filtrado:', filtrados.length);
+        
+        // Atualiza estado visual dos botões de filtro rápido
+        DataManager.atualizarBotoesFiltroRapido();
+        
         Renderer.renderizarTabela(filtrados);
+    }
+    
+// Filtro rápido: adiciona 7 dias à data inicial
+static filtroRapido7Dias() {
+    const dataInicio = DOM.filtroDataInicio?.value;
+    
+    if (!dataInicio) {
+        Notifications.mostrarToast('⚠️ Selecione primeiro a data inicial (De)', 'error');
+        return;
+    }
+    
+    // Calcula data final = data inicial + 7 dias
+    const data = new Date(dataInicio + 'T00:00:00');
+    data.setDate(data.getDate() + 7);
+    const dataFim = data.toISOString().split('T')[0];
+    
+    DOM.filtroDataFim.value = dataFim;
+    
+    DataManager.filtrarRegistros();
+    Notifications.mostrarToast('📅 Período: 7 dias a partir da data inicial', 'info');
+}
+
+// Filtro rápido: adiciona 30 dias à data inicial
+static filtroRapido30Dias() {
+    const dataInicio = DOM.filtroDataInicio?.value;
+    
+    if (!dataInicio) {
+        Notifications.mostrarToast('⚠️ Selecione primeiro a data inicial (De)', 'error');
+        return;
+    }
+    
+    // Calcula data final = data inicial + 30 dias
+    const data = new Date(dataInicio + 'T00:00:00');
+    data.setDate(data.getDate() + 30);
+    const dataFim = data.toISOString().split('T')[0];
+    
+    DOM.filtroDataFim.value = dataFim;
+    
+    DataManager.filtrarRegistros();
+    Notifications.mostrarToast('📅 Período: 30 dias a partir da data inicial', 'info');
+}
+
+// Atualiza estado visual dos botões de filtro rápido
+static atualizarBotoesFiltroRapido() {
+    if (!DOM.btnFiltroRapido7 || !DOM.btnFiltroRapido30) return;
+    
+    const dataInicio = DOM.filtroDataInicio?.value;
+    const dataFim = DOM.filtroDataFim?.value;
+    
+    if (!dataInicio || !dataFim) {
+        DOM.btnFiltroRapido7.classList.remove('active-filter');
+        DOM.btnFiltroRapido30.classList.remove('active-filter');
+        return;
+    }
+    
+    // Calcula qual seria a data final para 7 dias
+    const data7 = new Date(dataInicio + 'T00:00:00');
+    data7.setDate(data7.getDate() + 7);
+    const is7Dias = dataFim === data7.toISOString().split('T')[0];
+    
+    // Calcula qual seria a data final para 30 dias
+    const data30 = new Date(dataInicio + 'T00:00:00');
+    data30.setDate(data30.getDate() + 30);
+    const is30Dias = dataFim === data30.toISOString().split('T')[0];
+    
+    // Atualiza classes visuais
+    DOM.btnFiltroRapido7.classList.toggle('active-filter', is7Dias);
+    DOM.btnFiltroRapido30.classList.toggle('active-filter', is30Dias);
+}
+    
+    // Limpa todos os filtros
+    static limparFiltros() {
+        DOM.filtroTurma.value = 'Todas';
+        DOM.filtroDataInicio.value = '';
+        DOM.filtroDataFim.value = '';
+        DOM.filtroStatus.value = 'Todos';
+        DataManager.filtrarRegistros();
     }
 }
 
@@ -539,7 +666,7 @@ class Renderer {
             DOM.tbodyRegistros.innerHTML = `
                 <tr>
                     <td colspan="8" style="text-align: center; padding: 2rem; color: #64748b;">
-                        📭 Nenhum registro encontrado
+                        📭 Nenhum registro encontrado para os filtros selecionados
                     </td>
                 </tr>
             `;
@@ -549,6 +676,7 @@ class Renderer {
         let html = '';
         
         registros.forEach((registro) => {
+            // Encontra o índice na planilha (linha + 2 porque planilha começa na linha 2)
             const indexOriginal = registrosCompletos.findIndex(r => 
                 r.Nome === registro.Nome && 
                 r.Datainicio === registro.Datainicio &&
@@ -590,10 +718,10 @@ class Renderer {
                     <td>${arquivoHtml}</td>
                     <td><span class="status-badge ${statusClass}">${Utils.escapeHtml(status)}</span></td>
                     <td class="acoes-cell no-print">
-                        <button class="btn-icon edit" onclick="App.abrirModalEditar(${linhaOriginal})" title="Editar">
+                        <button class="btn-icon edit" onclick="App.abrirModalEditar(${linhaOriginal})" title="Editar registro">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn-icon delete" onclick="App.abrirModalExcluir(${linhaOriginal}, '${Utils.escapeHtml(nome).replace(/'/g, "\\'")}')" title="Excluir">
+                        <button class="btn-icon delete" onclick="App.abrirModalExcluir(${linhaOriginal}, '${Utils.escapeHtml(nome).replace(/'/g, "\\'")}')" title="Excluir registro">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -604,19 +732,42 @@ class Renderer {
         DOM.tbodyRegistros.innerHTML = html;
     }
     
-    // Gera HTML para impressão
+    // Gera HTML para impressão com os mesmos filtros da tela
     static gerarHTMLImpressao() {
         const turmaFiltro = DOM.filtroTurma.value;
         const statusFiltro = DOM.filtroStatus.value;
+        const dataInicioFiltro = DOM.filtroDataInicio?.value;
+        const dataFimFiltro = DOM.filtroDataFim?.value;
         
         let registrosParaImprimir = [...registrosCompletos];
         
+        // Aplica os mesmos filtros da visualização atual
         if (turmaFiltro && turmaFiltro !== 'Todas') {
             const filtroNormalizado = TURMAS_NORMALIZADAS[turmaFiltro] || turmaFiltro;
             registrosParaImprimir = registrosParaImprimir.filter(r => {
                 let turmaRegistro = (r.Turma || r.turma || r.TURMA || '').trim();
                 const turmaNormalizada = TURMAS_NORMALIZADAS[turmaRegistro] || turmaRegistro;
                 return turmaNormalizada === filtroNormalizado;
+            });
+        }
+        
+        if (dataInicioFiltro || dataFimFiltro) {
+            registrosParaImprimir = registrosParaImprimir.filter(r => {
+                let dataRegistro = Utils.converterDataParaISO(
+                    r.Datainicio || r.DATAINICIO || r.dataInicio || ''
+                );
+                if (!dataRegistro) return false;
+                
+                if (dataInicioFiltro && dataFimFiltro) {
+                    return dataRegistro >= dataInicioFiltro && dataRegistro <= dataFimFiltro;
+                }
+                if (dataInicioFiltro && !dataFimFiltro) {
+                    return dataRegistro >= dataInicioFiltro;
+                }
+                if (!dataInicioFiltro && dataFimFiltro) {
+                    return dataRegistro <= dataFimFiltro;
+                }
+                return true;
             });
         }
         
@@ -628,6 +779,7 @@ class Renderer {
             });
         }
         
+        // Ordena por data (mais recente primeiro)
         registrosParaImprimir.sort((a, b) => {
             const dataA = Utils.converterDataParaISO(a.Datainicio || a.DATAINICIO || '');
             const dataB = Utils.converterDataParaISO(b.Datainicio || b.DATAINICIO || '');
@@ -642,20 +794,31 @@ class Renderer {
             minute: '2-digit'
         });
         
+        // Monta o HTML de impressão
         let html = `
             <div id="printArea">
                 <div class="print-header">
                     <h2>📋 Registro de Atestados</h2>
-                    <p>E.E. Mariana Cavalcanti - Biblioteca</p>
-                    <p><strong>Data da impressão:</strong> ${dataAtual}</p>
-                    <p><strong>Total de registros:</strong> ${registrosParaImprimir.length}</p>
+                    <p><strong>E.E. Mariana Cavalcanti - Biblioteca</strong></p>
+                    <p>Data da impressão: ${dataAtual}</p>
+                    <p>Total de registros: <strong>${registrosParaImprimir.length}</strong></p>
         `;
         
+        // Mostra os filtros aplicados
         if (turmaFiltro && turmaFiltro !== 'Todas') {
-            html += `<p><strong>Turma:</strong> ${turmaFiltro}</p>`;
+            html += `<p>Turma: <strong>${turmaFiltro}</strong></p>`;
         }
+        
+        if (dataInicioFiltro && dataFimFiltro) {
+            html += `<p>Período: <strong>${Utils.formatarData(dataInicioFiltro)} até ${Utils.formatarData(dataFimFiltro)}</strong></p>`;
+        } else if (dataInicioFiltro) {
+            html += `<p>A partir de: <strong>${Utils.formatarData(dataInicioFiltro)}</strong></p>`;
+        } else if (dataFimFiltro) {
+            html += `<p>Até: <strong>${Utils.formatarData(dataFimFiltro)}</strong></p>`;
+        }
+        
         if (statusFiltro && statusFiltro !== 'Todos') {
-            html += `<p><strong>Status:</strong> ${statusFiltro}</p>`;
+            html += `<p>Status: <strong>${statusFiltro}</strong></p>`;
         }
         
         html += `
@@ -664,7 +827,7 @@ class Renderer {
                     <thead>
                         <tr>
                             <th>Nome</th>
-                            <th>Turma</th>
+                            <th>Turma/Grupo</th>
                             <th>Data Início</th>
                             <th>Data Fim</th>
                             <th>Motivo</th>
@@ -674,25 +837,35 @@ class Renderer {
                     <tbody>
         `;
         
-        registrosParaImprimir.forEach(registro => {
-            const nome = registro.Nome || registro.nome || '—';
-            const turma = registro.Turma || registro.turma || '—';
-            const dataInicio = Utils.formatarData(registro.Datainicio || registro.datainicio || '');
-            const dataFim = Utils.formatarData(registro.Datafim || registro.datafim || '');
-            const motivo = registro.Motivo || registro.motivo || '—';
-            const status = registro.Status || registro.status || 'Pendente';
-            
+        if (registrosParaImprimir.length === 0) {
             html += `
                 <tr>
-                    <td>${Utils.escapeHtml(nome)}</td>
-                    <td>${Utils.escapeHtml(turma)}</td>
-                    <td>${dataInicio}</td>
-                    <td>${dataFim}</td>
-                    <td>${Utils.escapeHtml(motivo.substring(0, 80))}${motivo.length > 80 ? '...' : ''}</td>
-                    <td>${Utils.escapeHtml(status)}</td>
+                    <td colspan="6" style="text-align: center; padding: 20px; color: #64748b;">
+                        Nenhum registro encontrado para os filtros selecionados
+                    </td>
                 </tr>
             `;
-        });
+        } else {
+            registrosParaImprimir.forEach(registro => {
+                const nome = registro.Nome || registro.nome || '—';
+                const turma = registro.Turma || registro.turma || '—';
+                const dataInicio = Utils.formatarData(registro.Datainicio || registro.datainicio || '');
+                const dataFim = Utils.formatarData(registro.Datafim || registro.datafim || '');
+                const motivo = registro.Motivo || registro.motivo || '—';
+                const status = registro.Status || registro.status || 'Pendente';
+                
+                html += `
+                    <tr>
+                        <td>${Utils.escapeHtml(nome)}</td>
+                        <td>${Utils.escapeHtml(turma)}</td>
+                        <td>${dataInicio}</td>
+                        <td>${dataFim}</td>
+                        <td>${Utils.escapeHtml(motivo.length > 80 ? motivo.substring(0, 80) + '...' : motivo)}</td>
+                        <td>${Utils.escapeHtml(status)}</td>
+                    </tr>
+                `;
+            });
+        }
         
         html += `
                     </tbody>
@@ -750,7 +923,7 @@ class FileManager {
             return;
         }
         
-        // Mostra info
+        // Mostra info do arquivo
         const tamanhoMB = (file.size / (1024 * 1024)).toFixed(2);
         DOM.fileInfo.style.display = 'flex';
         DOM.fileInfo.innerHTML = `
@@ -797,7 +970,7 @@ class FileManager {
                 return { success: true, link: link, nome: nomeArquivo };
             }
             
-            console.warn('⚠️ Upload retornou erro, continuando sem arquivo');
+            console.warn('⚠️ Upload retornou sem URL, continuando sem arquivo');
             return { success: true, link: '', nome: '' };
             
         } catch (error) {
@@ -1064,6 +1237,7 @@ class PrintManager {
         iframe.style.width = '0';
         iframe.style.height = '0';
         iframe.style.border = '0';
+        iframe.title = 'Impressão de Atestados';
         
         document.body.appendChild(iframe);
         
@@ -1078,16 +1252,51 @@ class PrintManager {
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
                 <style>
                     * { margin: 0; padding: 0; box-sizing: border-box; }
-                    body { font-family: 'Inter', sans-serif; padding: 20px; color: #1e293b; }
-                    .print-header { text-align: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 3px solid #8b5cf6; }
-                    .print-header h2 { color: #1e293b; font-size: 22px; margin-bottom: 5px; }
-                    .print-header p { color: #64748b; margin: 3px 0; font-size: 14px; }
-                    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 15px; }
-                    th { background: #f1f5f9; color: #1e293b; font-weight: 700; text-align: left; padding: 8px 10px; border: 1px solid #cbd5e1; }
-                    td { padding: 7px 10px; border: 1px solid #e2e8f0; }
-                    tr:nth-child(even) { background: #f8fafc; }
+                    body { 
+                        font-family: 'Inter', sans-serif; 
+                        padding: 20px; 
+                        color: #1e293b; 
+                    }
+                    .print-header { 
+                        text-align: center; 
+                        margin-bottom: 20px; 
+                        padding-bottom: 15px; 
+                        border-bottom: 3px solid #8b5cf6; 
+                    }
+                    .print-header h2 { 
+                        color: #1e293b; 
+                        font-size: 22px; 
+                        margin-bottom: 5px; 
+                    }
+                    .print-header p { 
+                        color: #64748b; 
+                        margin: 3px 0; 
+                        font-size: 13px; 
+                    }
+                    table { 
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        font-size: 11px; 
+                        margin-top: 15px; 
+                    }
+                    th { 
+                        background: #f1f5f9; 
+                        color: #1e293b; 
+                        font-weight: 700; 
+                        text-align: left; 
+                        padding: 8px 10px; 
+                        border: 1px solid #cbd5e1; 
+                    }
+                    td { 
+                        padding: 7px 10px; 
+                        border: 1px solid #e2e8f0; 
+                    }
+                    tr:nth-child(even) { 
+                        background: #f8fafc; 
+                    }
                     @media print {
                         body { padding: 0; }
+                        @page { margin: 1cm; }
                     }
                 </style>
             </head>
@@ -1106,7 +1315,9 @@ class PrintManager {
                 
                 // Remove o iframe após imprimir (ou cancelar)
                 setTimeout(() => {
-                    document.body.removeChild(iframe);
+                    if (document.body.contains(iframe)) {
+                        document.body.removeChild(iframe);
+                    }
                 }, 1000);
             }, 500);
         };
@@ -1124,6 +1335,7 @@ class DateConfig {
     static configurar() {
         const hoje = Utils.getHoje();
         
+        // Define data atual nos campos
         if (DOM.dataInicio) DOM.dataInicio.value = hoje;
         if (DOM.dataFim) DOM.dataFim.value = hoje;
         
@@ -1135,18 +1347,15 @@ class DateConfig {
             }
         });
         
-        // Validação de data futura (opcional - descomente se quiser)
-        // DOM.dataInicio.addEventListener('change', DateConfig.validarDataFutura);
-    }
-    
-    static validarDataFutura() {
-        const hoje = new Date();
-        hoje.setHours(0, 0, 0, 0);
-        const dataSelecionada = new Date(this.value);
-        
-        if (dataSelecionada > hoje) {
-            Notifications.mostrarToast('⚠️ Data de início não pode ser futura!', 'error');
-            this.value = Utils.getHoje();
+        // No filtro, data fim não pode ser anterior à data início
+        if (DOM.filtroDataInicio && DOM.filtroDataFim) {
+            DOM.filtroDataInicio.addEventListener('change', () => {
+                DOM.filtroDataFim.min = DOM.filtroDataInicio.value;
+            });
+            
+            DOM.filtroDataFim.addEventListener('change', () => {
+                DOM.filtroDataInicio.max = DOM.filtroDataFim.value;
+            });
         }
     }
 }
@@ -1166,15 +1375,20 @@ class EventConfig {
             });
         }
         
-        // Botões
+        // Botões principais
         if (DOM.btnLimpar) DOM.btnLimpar.addEventListener('click', CrudOperations.limparFormulario);
         if (DOM.btnAtualizar) DOM.btnAtualizar.addEventListener('click', DataManager.carregarRegistros);
         if (DOM.selectTurma) DOM.selectTurma.addEventListener('change', DataManager.carregarAlunosDaTurma);
         
         // Filtros
         if (DOM.filtroTurma) DOM.filtroTurma.addEventListener('change', DataManager.filtrarRegistros);
-        if (DOM.filtroData) DOM.filtroData.addEventListener('change', DataManager.filtrarRegistros);
+        if (DOM.filtroDataInicio) DOM.filtroDataInicio.addEventListener('change', DataManager.filtrarRegistros);
+        if (DOM.filtroDataFim) DOM.filtroDataFim.addEventListener('change', DataManager.filtrarRegistros);
         if (DOM.filtroStatus) DOM.filtroStatus.addEventListener('change', DataManager.filtrarRegistros);
+        
+        // Botões de filtro rápido
+        if (DOM.btnFiltroRapido7) DOM.btnFiltroRapido7.addEventListener('click', DataManager.filtroRapido7Dias);
+        if (DOM.btnFiltroRapido30) DOM.btnFiltroRapido30.addEventListener('click', DataManager.filtroRapido30Dias);
         
         // Botões modais
         document.getElementById('btnSalvarEdicao')?.addEventListener('click', CrudOperations.salvarEdicao);
@@ -1212,7 +1426,9 @@ class EventConfig {
 const App = {
     
     async init() {
-        console.log('🚀 Sistema de Atestados iniciado!');
+        console.log('🚀 Sistema de Atestados v2.1 iniciado!');
+        console.log('📅 Filtro de período: ATIVO');
+        console.log('🖨️ Impressão: ATIVA');
         
         // Inicializa cache DOM
         DOM.init();
@@ -1228,6 +1444,7 @@ const App = {
         await DataManager.carregarRegistros();
         
         console.log('✅ Sistema pronto!');
+        console.log('💡 Dica: Use os botões "7 dias" ou "30 dias" para filtrar por período rapidamente.');
     },
     
     // Métodos públicos (expostos globalmente)
