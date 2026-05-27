@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- ========== HEADER ========== -->
     <header>
         <div class="header-content">
             <div class="logo">
@@ -31,11 +32,17 @@
             </nav>
         </div>
     </header>
+
+    <!-- ========== MAIN CONTENT ========== -->
     <main class="main-content">
+        
+        <!-- Page Header -->
         <div class="page-header">
             <h2><i class="fas fa-clipboard-check"></i> Registro de Atestados</h2>
-            <p>Registre e gerencie justificativas de faltas dos alunos</p>
+            <p>Registre e gerencie justificativas de faltas dos alunos e funcionários</p>
         </div>
+
+        <!-- Tabs -->
         <div class="tabs-container">
             <button class="tab-btn active" data-tab="registrar">
                 <i class="fas fa-plus-circle"></i> Registrar
@@ -44,65 +51,105 @@
                 <i class="fas fa-search"></i> Consultar
             </button>
         </div>
+
+        <!-- ===== TAB: REGISTRAR ===== -->
         <div id="tab-registrar" class="tab-content active">
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fas fa-file-medical"></i> Nova Justificativa</h3>
                 </div>
                 <div class="card-body">
-                    <form id="formAtestado">
+                    <form id="formAtestado" autocomplete="off">
+                        
+                        <!-- Linha 1: Turma, Aluno, Status -->
                         <div class="form-grid-3">
                             <div class="form-group">
-                                <label for="turma"><i class="fas fa-users"></i> Turma/Grupo *</label>
+                                <label for="turma">
+                                    <i class="fas fa-users"></i> Turma/Grupo *
+                                </label>
                                 <select id="turma" name="turma" required>
                                     <option value="">Carregando turmas...</option>
                                 </select>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="aluno"><i class="fas fa-user-graduate"></i> Aluno/Funcionário *</label>
+                                <label for="aluno">
+                                    <i class="fas fa-user-graduate"></i> Aluno/Funcionário *
+                                </label>
                                 <select id="aluno" name="aluno" required disabled>
                                     <option value="">Selecione uma turma primeiro</option>
                                 </select>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="status"><i class="fas fa-tag"></i> Status</label>
+                                <label for="status">
+                                    <i class="fas fa-tag"></i> Status
+                                </label>
                                 <select id="status" name="status">
-                                    <option value="Aprovado">Aprovado</option>
-                                    <option value="Pendente">Pendente</option>
-                                    <option value="Rejeitado">Rejeitado</option>
+                                    <option value="Aprovado">✅ Aprovado</option>
+                                    <option value="Pendente">⏳ Pendente</option>
+                                    <option value="Rejeitado">❌ Rejeitado</option>
                                 </select>
                             </div>
                         </div>
+
+                        <!-- Linha 2: Datas -->
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label for="dataInicio"><i class="fas fa-calendar-alt"></i> Data Início *</label>
+                                <label for="dataInicio">
+                                    <i class="fas fa-calendar-alt"></i> Data Início *
+                                </label>
                                 <input type="date" id="dataInicio" name="dataInicio" required>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="dataFim"><i class="fas fa-calendar-check"></i> Data Fim *</label>
+                                <label for="dataFim">
+                                    <i class="fas fa-calendar-check"></i> Data Fim *
+                                </label>
                                 <input type="date" id="dataFim" name="dataFim" required>
                             </div>
                         </div>
+
+                        <!-- Motivo -->
                         <div class="form-group">
-                            <label for="motivo"><i class="fas fa-pencil-alt"></i> Motivo *</label>
-                            <textarea id="motivo" name="motivo" rows="3" placeholder="Descreva o motivo da falta..." required></textarea>
+                            <label for="motivo">
+                                <i class="fas fa-pencil-alt"></i> Motivo *
+                            </label>
+                            <textarea id="motivo" name="motivo" rows="3" 
+                                      placeholder="Descreva o motivo da falta (atestado médico, declaração, etc.)" 
+                                      required></textarea>
                         </div>
+
+                        <!-- Observações -->
                         <div class="form-group">
-                            <label for="observacoes"><i class="fas fa-sticky-note"></i> Observações</label>
-                            <textarea id="observacoes" name="observacoes" rows="2" placeholder="Informações adicionais (opcional)"></textarea>
+                            <label for="observacoes">
+                                <i class="fas fa-sticky-note"></i> Observações
+                            </label>
+                            <textarea id="observacoes" name="observacoes" rows="2" 
+                                      placeholder="Informações adicionais (opcional)"></textarea>
                         </div>
+
+                        <!-- Upload de Arquivo -->
                         <div class="form-group">
-                            <label for="arquivo"><i class="fas fa-paperclip"></i> Anexar Arquivo</label>
+                            <label for="arquivo">
+                                <i class="fas fa-paperclip"></i> Anexar Arquivo
+                            </label>
                             <div class="file-upload-wrapper">
-                                <input type="file" id="arquivo" name="arquivo" accept=".pdf,.jpg,.jpeg,.png">
+                                <input type="file" id="arquivo" name="arquivo" 
+                                       accept=".pdf,.jpg,.jpeg,.png">
                                 <div class="file-upload-label">
                                     <i class="fas fa-cloud-upload-alt"></i>
                                     <span>Clique ou arraste um arquivo</span>
                                 </div>
                             </div>
                             <div id="fileInfo" class="file-info" style="display: none;"></div>
-                            <small><i class="fas fa-info-circle"></i> Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+                            <small>
+                                <i class="fas fa-info-circle"></i> 
+                                Formatos permitidos: PDF, JPG, PNG (máx. 10MB)
+                            </small>
                         </div>
+
+                        <!-- Botões -->
                         <div class="form-actions">
                             <button type="button" class="btn-secondary" id="btnLimpar">
                                 <i class="fas fa-undo-alt"></i> Limpar
@@ -112,42 +159,62 @@
                             </button>
                         </div>
                     </form>
+
+                    <!-- Mensagem de feedback -->
                     <div id="mensagemRegistro" class="mensagem"></div>
                 </div>
             </div>
         </div>
+
+        <!-- ===== TAB: CONSULTAR ===== -->
         <div id="tab-consultar" class="tab-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fas fa-list"></i> Registros</h3>
+                    <h3><i class="fas fa-list"></i> Registros de Atestados</h3>
+                    <button class="btn-print no-print" id="btnImprimir" title="Imprimir lista">
+                        <i class="fas fa-print"></i> Imprimir
+                    </button>
                 </div>
                 <div class="card-body">
-                    <div class="filtros-consultar">
+                    
+                    <!-- Filtros -->
+                    <div class="filtros-consultar no-print">
                         <div class="filtro-grupo">
-                            <label for="filtroTurma"><i class="fas fa-users"></i> Turma/Grupo</label>
+                            <label for="filtroTurma">
+                                <i class="fas fa-users"></i> Turma/Grupo
+                            </label>
                             <select id="filtroTurma">
                                 <option value="Todas">Todas</option>
                             </select>
                         </div>
+                        
                         <div class="filtro-grupo">
-                            <label for="filtroData"><i class="fas fa-calendar"></i> Data</label>
+                            <label for="filtroData">
+                                <i class="fas fa-calendar"></i> Data Início
+                            </label>
                             <input type="date" id="filtroData">
                         </div>
+                        
                         <div class="filtro-grupo">
-                            <label for="filtroStatus"><i class="fas fa-tag"></i> Status</label>
+                            <label for="filtroStatus">
+                                <i class="fas fa-tag"></i> Status
+                            </label>
                             <select id="filtroStatus">
                                 <option value="Todos">Todos</option>
-                                <option value="Aprovado">Aprovado</option>
-                                <option value="Pendente">Pendente</option>
-                                <option value="Rejeitado">Rejeitado</option>
+                                <option value="Aprovado">✅ Aprovado</option>
+                                <option value="Pendente">⏳ Pendente</option>
+                                <option value="Rejeitado">❌ Rejeitado</option>
                             </select>
                         </div>
+                        
                         <div class="filtro-acoes">
-                            <button class="btn-secondary" id="btnAtualizar">
+                            <button class="btn-secondary" id="btnAtualizar" title="Atualizar lista">
                                 <i class="fas fa-sync-alt"></i> Atualizar
                             </button>
                         </div>
                     </div>
+
+                    <!-- Tabela -->
                     <div class="table-wrapper">
                         <table id="tabelaRegistros">
                             <thead>
@@ -159,106 +226,123 @@
                                     <th>💬 Motivo</th>
                                     <th>📎 Arquivo</th>
                                     <th>🏷️ Status</th>
-                                    <th>⚙️ Ações</th>
+                                    <th class="no-print">⚙️ Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyRegistros">
-                                <tr><td colspan="8" style="text-align: center;">Carregando registros...</td></tr>
+                                <tr>
+                                    <td colspan="8" style="text-align: center; padding: 2rem; color: #64748b;">
+                                        <i class="fas fa-spinner fa-spin"></i> Carregando registros...
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ===== MODAL: EDITAR ===== -->
         <div id="modalEditar" class="modal-overlay">
             <div class="modal-container modal-large">
                 <div class="modal-header">
                     <h3><i class="fas fa-edit"></i> Editar Justificativa</h3>
-                    <button class="modal-close" onclick="closeModalEditar()">
+                    <button class="modal-close" onclick="App.fecharModalEditar()">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="formEditar">
+                    <form id="formEditar" autocomplete="off">
                         <input type="hidden" id="editLinha">
+                        
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label for="editNome">Nome</label>
+                                <label for="editNome">👤 Nome</label>
                                 <input type="text" id="editNome" readonly>
                             </div>
                             <div class="form-group">
-                                <label for="editTurma">Turma</label>
+                                <label for="editTurma">📚 Turma</label>
                                 <input type="text" id="editTurma" readonly>
                             </div>
                         </div>
+                        
                         <div class="form-group">
-                            <label for="editMotivo">Motivo</label>
+                            <label for="editMotivo">💬 Motivo</label>
                             <textarea id="editMotivo" rows="3"></textarea>
                         </div>
+                        
                         <div class="form-group">
-                            <label for="editObs">Observações</label>
+                            <label for="editObs">📝 Observações</label>
                             <textarea id="editObs" rows="2"></textarea>
                         </div>
+                        
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label for="editDataInicio">Data Início</label>
+                                <label for="editDataInicio">📅 Data Início</label>
                                 <input type="date" id="editDataInicio">
                             </div>
                             <div class="form-group">
-                                <label for="editDataFim">Data Fim</label>
+                                <label for="editDataFim">📅 Data Fim</label>
                                 <input type="date" id="editDataFim">
                             </div>
                         </div>
+                        
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label for="editStatus">Status</label>
+                                <label for="editStatus">🏷️ Status</label>
                                 <select id="editStatus">
-                                    <option value="Aprovado">Aprovado</option>
-                                    <option value="Pendente">Pendente</option>
-                                    <option value="Rejeitado">Rejeitado</option>
+                                    <option value="Aprovado">✅ Aprovado</option>
+                                    <option value="Pendente">⏳ Pendente</option>
+                                    <option value="Rejeitado">❌ Rejeitado</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="editLink">Link do Arquivo</label>
+                                <label for="editLink">🔗 Link do Arquivo</label>
                                 <input type="text" id="editLink" readonly>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeModalEditar()">
+                    <button class="btn-cancel" onclick="App.fecharModalEditar()">
                         <i class="fas fa-times"></i> Cancelar
                     </button>
                     <button class="btn-primary" id="btnSalvarEdicao">
-                        <i class="fas fa-save"></i> Salvar
+                        <i class="fas fa-save"></i> Salvar Alterações
                     </button>
                 </div>
             </div>
         </div>
-    </main>
-        <!-- ===== MODAL: CONFIRMAR EXCLUSÃO ===== -->
-    <div id="modalExcluir" class="modal-overlay">
-        <div class="modal-container" style="max-width: 400px;">
-            <div class="modal-header">
-                <h3><i class="fas fa-trash-alt" style="color: #ef4444;"></i> Confirmar Exclusão</h3>
-                <button class="modal-close" onclick="closeModalExcluir()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p style="text-align: center; font-size: 1.1rem;">Tem certeza que deseja excluir esta justificativa?</p>
-                <p style="text-align: center; color: #64748b;" id="excluirNome"></p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-cancel" onclick="closeModalExcluir()">
-                    <i class="fas fa-times"></i> Cancelar
-                </button>
-                <button class="btn-danger" id="btnConfirmarExclusao">
-                    <i class="fas fa-trash-alt"></i> Excluir
-                </button>
+
+        <!-- ===== MODAL: EXCLUIR ===== -->
+        <div id="modalExcluir" class="modal-overlay">
+            <div class="modal-container" style="max-width: 450px;">
+                <div class="modal-header">
+                    <h3><i class="fas fa-trash-alt" style="color: #ef4444;"></i> Confirmar Exclusão</h3>
+                    <button class="modal-close" onclick="App.fecharModalExcluir()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #f59e0b; margin-bottom: 1rem;"></i>
+                    <p style="font-size: 1.1rem; font-weight: 500;">Tem certeza que deseja excluir esta justificativa?</p>
+                    <p style="color: #64748b; margin-top: 0.5rem;" id="excluirNome"></p>
+                    <p style="color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem;">Esta ação não pode ser desfeita!</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-cancel" onclick="App.fecharModalExcluir()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button class="btn-danger" id="btnConfirmarExclusao">
+                        <i class="fas fa-trash-alt"></i> Excluir Permanentemente
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+        
+    </main>
+
+    <!-- Scripts -->
     <script src="assets/js/config.js"></script>
     <script src="assets/js/atestados.js"></script>
 </body>
